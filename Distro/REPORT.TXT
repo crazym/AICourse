@@ -8,11 +8,11 @@ mark.
 
 ________________________________________________
 
-Student Name (last, first):
+Student Name (last, first): ZHANG Maoting 
 
-Student number:
+Student number: 999590633
 
-UTORid:
+UTORid: zhangmao
 
 READ THIS AND SIGN YOUR NAME AT THE END:
 
@@ -20,7 +20,7 @@ READ THIS AND SIGN YOUR NAME AT THE END:
 honesty and plaguarism. All work submitted as part
 of this assignment is my own.
 
-	Signed: _(your name goes here)__
+	Signed: _Maoting Zhang_
 
 
 (-5 marks for failing to provide the identifying

@@ -25,7 +25,10 @@
 
 #include "AI_search.h"
 
-void search(double gr[graph_size][4], int path[graph_size][2], int visit_order[size_X][size_Y], int cat_loc[10][2], int cats, int cheese_loc[10][2], int cheeses, int mouse_loc[1][2], int mode, int (*heuristic)(int x, int y, int cat_loc[10][2], int cheese_loc[10][2], int mouse_loc[1][2], int cats, int cheeses, double gr[graph_size][4]))
+void search(double gr[graph_size][4], int path[graph_size][2], int visit_order[size_X][size_Y], 
+	int cat_loc[10][2], int cats, int cheese_loc[10][2], int cheeses, int mouse_loc[1][2], int mode, 
+	int (*heuristic)(int x, int y, int cat_loc[10][2], int cheese_loc[10][2], int mouse_loc[1][2], 
+		int cats, int cheeses, double gr[graph_size][4]))
 {
  /*
    This function is the interface between your solution for the assignment and the driver code. The driver code
@@ -45,13 +48,13 @@ void search(double gr[graph_size][4], int path[graph_size][2], int visit_order[s
 	Since each node represents a grid location, each node can be connected to up to 4 neighbours in the
 	top, right, bottom, and left directions respectively:
 
-			node at (i,j-1)
-				^
-				|
+						node at (i,j-1)
+							^
+							|
 	(node at i-1, j) <- node at (i,j) -> node at (i+1, j)
-				|
-				v
-			node at (i,j+1)
+							|
+							v
+						node at (i,j+1)
 
 	The graph is theredore stored as an adjacency list with size 1024 x 4, with one row per node in the
 	graph, and 4 columns corresponding to the weight of an edge linking the node with each of its 4
