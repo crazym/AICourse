@@ -209,12 +209,12 @@ void search(double gr[graph_size][4], int path[graph_size][2], int visit_order[s
  visit_order[cur_x][cur_y] = node_order;
  node_order++;
 
- while (front_pointer <= node_order) {
-
- 	cur_x = node_queue[node_order][0];
- 	cur_y = node_queue[node_order][1];
+ while (front_pointer < graph_size && front_pointer <= node_order) {
+ 	// fprintf(stderr, "front pointer at %d while node order at %d\n", front_pointer, node_order);
+ 	cur_x = node_queue[front_pointer][0];
+ 	cur_y = node_queue[front_pointer][1];
  	cur_index = cur_x + (cur_y*size_X);
- 	fprintf(stderr, "at (%d, %d) index is %d\n", cur_x, cur_y, cur_index);
+ 	// fprintf(stderr, "at (%d, %d) index is %d\n", cur_x, cur_y, cur_index);
  	// loop through all nieghbors
  	// for (int i=1; i<4; i++) {
  	// 	int x,y, ngbr_index;
@@ -243,7 +243,7 @@ void search(double gr[graph_size][4], int path[graph_size][2], int visit_order[s
  	y = cur_y - 1;
  	// ngbr_index = x + (y*size_X);
 	if ((gr[cur_index][0] == 1) && ( checkCats(x, y, cat_loc) == 0) && visited[x][y] == 0){
-		
+		visited[x][y] = 1;
 		node_parent[node_order][0] = cur_x;
 		node_parent[node_order][1] = cur_y;
 		visit_order[x][y] = node_order;
@@ -260,12 +260,13 @@ void search(double gr[graph_size][4], int path[graph_size][2], int visit_order[s
 			node_queue[node_order][1] = y; 	 		
 	 	}
 	}
+
  	// check right
  	x = cur_x + 1;
  	y = cur_y;
  	// ngbr_index = x + (y*size_X);
 	if ((gr[cur_index][1] == 1) && ( checkCats(x, y, cat_loc) == 0) && visited[x][y] == 0){
-		
+		visited[x][y] = 1;
 		node_parent[node_order][0] = cur_x;
 		node_parent[node_order][1] = cur_y;
 		visit_order[x][y] = node_order;
@@ -288,7 +289,7 @@ void search(double gr[graph_size][4], int path[graph_size][2], int visit_order[s
  	y = cur_y + 1;
  	// ngbr_index = x + (y*size_X);
 	if ((gr[cur_index][2] == 1) && ( checkCats(x, y, cat_loc) == 0) && visited[x][y] == 0){
-		
+		visited[x][y] = 1;
 		node_parent[node_order][0] = cur_x;
 		node_parent[node_order][1] = cur_y;
 		visit_order[x][y] = node_order;
@@ -311,7 +312,7 @@ void search(double gr[graph_size][4], int path[graph_size][2], int visit_order[s
  	y = cur_y;
  	// ngbr_index = x + (y*size_X);
 	if ((gr[cur_index][3] == 1) && ( checkCats(x, y, cat_loc) == 0) && visited[x][y] == 0){
-		
+		visited[x][y] = 1;
 		node_parent[node_order][0] = cur_x;
 		node_parent[node_order][1] = cur_y;
 		visit_order[x][y] = node_order;
@@ -335,16 +336,23 @@ void search(double gr[graph_size][4], int path[graph_size][2], int visit_order[s
 
  // found a cheese, start backtracking
  int tmp_counter = node_order - 1;
+ fprintf(stderr, "mouse loc at (%d, %d)\n", mouse_loc[0][0], mouse_loc[0][1]);
+ fprintf(stderr, "cheese loc at (%d, %d)\n", cheese_loc[0][0], mouse_loc[0][1]);
  while (node_parent[tmp_counter][0] != mouse_loc[0][0] && node_parent[tmp_counter][1] != mouse_loc[0][1]) {
+ 	fprintf(stderr, "backtrack parent to (%d, %d) at path_len=%d and node_order=%d\n", 
+ 		node_parent[tmp_counter][0], node_parent[tmp_counter][1], path_len, 
+ 		visit_order[node_parent[tmp_counter][0]][node_parent[tmp_counter][1]]);
+
  	backtrack[path_len][0] = node_parent[tmp_counter][0];
  	backtrack[path_len][1] = node_parent[tmp_counter][1];
  	// set next counter to be the visit order of parent node
  	tmp_counter = visit_order[node_parent[tmp_counter][0]][node_parent[tmp_counter][1]];
+ 	path_len++;
  }
 
  for (int i=0; i <= path_len; i++) {
- 	path[i][0] = backtrack[path_len-1-i][0];
- 	path[i][1] = backtrack[path_len-1-i][1];
+ 	path[i][0] = backtrack[path_len-i][0];
+ 	path[i][1] = backtrack[path_len-i][1];
  }
  
  // failed? empty queue
@@ -352,9 +360,10 @@ void search(double gr[graph_size][4], int path[graph_size][2], int visit_order[s
  return;
 }
 
+
 int checkCats(int x, int y, int cat_loc[10][2]){
 	// int flag = 0;
-	for (int i = 1; i<10; i++) {
+	for (int i = 0; i<10; i++) {
 		if (x == cat_loc[i][0] && y == cat_loc[i][1])
 			return 1;
 	}
@@ -363,7 +372,7 @@ int checkCats(int x, int y, int cat_loc[10][2]){
 
 int checkCheese(int x, int y, int cheese_loc[10][2]){
 	// int flag = 0;
-	for (int i = 1; i<10; i++) {
+	for (int i = 0; i<10; i++) {
 		if (x == cheese_loc[i][0] && y == cheese_loc[i][1])
 			return 1;
 	}

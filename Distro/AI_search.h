@@ -34,7 +34,8 @@ int H_cost(int x, int y, int cat_loc[10][2], int cheese_loc[10][2], int mouse_lo
 int H_cost_nokitty(int x, int y, int cat_loc[10][2], int cheese_loc[10][2], int mouse_loc[1][2], int cats, int cheeses, double gr[graph_size][4]);
 
 // If you need to add any function prototypes yourself, you can do so *below* this line.
-
+int checkCats(int x, int y, int cat_loc[10][2]);
+int checkCheese(int x, int y, int cheese_loc[10][2]);
 
 #endif
 
