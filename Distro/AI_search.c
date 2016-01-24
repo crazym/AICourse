@@ -247,7 +247,7 @@ void search(double gr[graph_size][4], int path[graph_size][2], int visit_order[s
 		node_parent[node_order][0] = cur_x;
 		node_parent[node_order][1] = cur_y;
 		visit_order[x][y] = node_order;
-		node_order++;	
+		
 		// check if we find a cheese
 	 	if (checkCheese(x, y, cheese_loc)) {
 	 		backtrack[path_len][0] = x;
@@ -259,6 +259,7 @@ void search(double gr[graph_size][4], int path[graph_size][2], int visit_order[s
 			node_queue[node_order][0] = x;
 			node_queue[node_order][1] = y; 	 		
 	 	}
+	 	node_order++;
 	}
 
  	// check right
@@ -270,7 +271,6 @@ void search(double gr[graph_size][4], int path[graph_size][2], int visit_order[s
 		node_parent[node_order][0] = cur_x;
 		node_parent[node_order][1] = cur_y;
 		visit_order[x][y] = node_order;
-		node_order++;	
 		// check if we find a cheese
 	 	if (checkCheese(x, y, cheese_loc)) {
 	 		backtrack[path_len][0] = x;
@@ -282,6 +282,7 @@ void search(double gr[graph_size][4], int path[graph_size][2], int visit_order[s
 			node_queue[node_order][0] = x;
 			node_queue[node_order][1] = y; 	 		
 	 	}
+	 	node_order++;
 	}
 
  	// check bottom
@@ -293,7 +294,7 @@ void search(double gr[graph_size][4], int path[graph_size][2], int visit_order[s
 		node_parent[node_order][0] = cur_x;
 		node_parent[node_order][1] = cur_y;
 		visit_order[x][y] = node_order;
-		node_order++;	
+			
 		// check if we find a cheese
 	 	if (checkCheese(x, y, cheese_loc)) {
 	 		backtrack[path_len][0] = x;
@@ -305,6 +306,7 @@ void search(double gr[graph_size][4], int path[graph_size][2], int visit_order[s
 			node_queue[node_order][0] = x;
 			node_queue[node_order][1] = y; 	 		
 	 	}
+	 	node_order++;
 	}
 
  	// check left
@@ -316,7 +318,6 @@ void search(double gr[graph_size][4], int path[graph_size][2], int visit_order[s
 		node_parent[node_order][0] = cur_x;
 		node_parent[node_order][1] = cur_y;
 		visit_order[x][y] = node_order;
-		node_order++;	
 		// check if we find a cheese
 	 	if (checkCheese(x, y, cheese_loc)) {
 	 		backtrack[path_len][0] = x;
@@ -328,6 +329,7 @@ void search(double gr[graph_size][4], int path[graph_size][2], int visit_order[s
 			node_queue[node_order][0] = x;
 			node_queue[node_order][1] = y; 	 		
 	 	}
+	 	node_order++;
 	}
 
 	// move front pointer for next round expansion
@@ -335,10 +337,11 @@ void search(double gr[graph_size][4], int path[graph_size][2], int visit_order[s
  } 
 
  // found a cheese, start backtracking
- int tmp_counter = node_order - 1;
+ int tmp_counter = node_order;
  fprintf(stderr, "mouse loc at (%d, %d)\n", mouse_loc[0][0], mouse_loc[0][1]);
- fprintf(stderr, "cheese loc at (%d, %d)\n", cheese_loc[0][0], mouse_loc[0][1]);
- while (node_parent[tmp_counter][0] != mouse_loc[0][0] && node_parent[tmp_counter][1] != mouse_loc[0][1]) {
+ fprintf(stderr, "cheese loc at (%d, %d)\n", backtrack[0][0], backtrack[0][1]);
+
+ while (! (node_parent[tmp_counter][0] == mouse_loc[0][0] && node_parent[tmp_counter][1] == mouse_loc[0][1])) {
  	fprintf(stderr, "backtrack parent to (%d, %d) at path_len=%d and node_order=%d\n", 
  		node_parent[tmp_counter][0], node_parent[tmp_counter][1], path_len, 
  		visit_order[node_parent[tmp_counter][0]][node_parent[tmp_counter][1]]);
@@ -348,9 +351,17 @@ void search(double gr[graph_size][4], int path[graph_size][2], int visit_order[s
  	// set next counter to be the visit order of parent node
  	tmp_counter = visit_order[node_parent[tmp_counter][0]][node_parent[tmp_counter][1]];
  	path_len++;
+
+ 	//  fprintf(stderr, "find mouse? %d when parent_node is (%d, %d)\n", 
+		// node_parent[tmp_counter][0] != mouse_loc[0][0] && node_parent[tmp_counter][1] != mouse_loc[0][1],
+		// node_parent[tmp_counter][0], node_parent[tmp_counter][1]);
  }
 
+ backtrack[path_len][0] = mouse_loc[0][0];
+ backtrack[path_len][1] = mouse_loc[0][1];
+
  for (int i=0; i <= path_len; i++) {
+ 	fprintf(stderr, "backtracking at (%d, %d)\n", backtrack[path_len-i][0], backtrack[path_len-i][1]);
  	path[i][0] = backtrack[path_len-i][0];
  	path[i][1] = backtrack[path_len-i][1];
  }
