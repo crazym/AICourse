@@ -22,7 +22,7 @@
 
 	Starter code: F.J.E. Jul. 15
 */
-
+#include <stdlib.h>
 #include "AI_search.h"
 
 void search(double gr[graph_size][4], int path[graph_size][2], int visit_order[size_X][size_Y], 
@@ -350,8 +350,10 @@ int dfs_search(int node_count, int node_stack[graph_size][2], int backtrack[grap
 
  	// exit recursion if found a cheese
  	if (check_cheese(cur_x, cur_y, cheese_loc, cheeses)) {
- 		backtrack[0][0] = cur_x;
- 		backtrack[0][1] = cur_y;
+ 		// backtrack[0][0] = cur_x;
+ 		// backtrack[0][1] = cur_y;
+ 		path[node_count][0] = cur_x;
+ 		path[node_count][1] = cur_y;
  		return 1;
  	}
 
@@ -412,8 +414,10 @@ int dfs_search(int node_count, int node_stack[graph_size][2], int backtrack[grap
 		cat_loc, cats, cheese_loc, cheeses, mouse_loc);
 
 	if (path_len > 0){
-		backtrack[path_len+1][0] = cur_x;
-		backtrack[path_len+1][1] = cur_y;
+		// backtrack[path_len+1][0] = cur_x;
+		// backtrack[path_len+1][1] = cur_y;
+		path[node_count][0] = cur_x;
+		path[node_count][1] = cur_y;
 		return path_len+1;
 	}
  } 
@@ -457,8 +461,15 @@ int H_cost(int x, int y, int cat_loc[10][2], int cheese_loc[10][2], int mouse_lo
 
 		These arguments are as described in the search() function above
  */
-
- return(1);		// <-- Evidently you will need to update this.
+	// mahatton distance: sum of x and y distance
+	int min_dist=99; // infinity as the largest distance cannot exceed sizeX + sizeY
+	int cur_dist;
+	for (int i=0; i<cheeses; i++) {
+		cur_dist = abs(x - cheese_loc[i][0]) + abs(y - cheese_loc[i][1]);
+		if (cur_dist < min_dist)
+			min_dist = cur_dist;
+	}
+ 	return min_dist;	
 }
 
 int H_cost_nokitty(int x, int y, int cat_loc[10][2], int cheese_loc[10][2], int mouse_loc[1][2], int cats, int cheeses, double gr[graph_size][4])
