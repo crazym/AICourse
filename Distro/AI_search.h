@@ -34,8 +34,10 @@ int H_cost(int x, int y, int cat_loc[10][2], int cheese_loc[10][2], int mouse_lo
 int H_cost_nokitty(int x, int y, int cat_loc[10][2], int cheese_loc[10][2], int mouse_loc[1][2], int cats, int cheeses, double gr[graph_size][4]);
 
 // If you need to add any function prototypes yourself, you can do so *below* this line.
-int checkCats(int x, int y, int cat_loc[10][2], int cats);
-int checkCheese(int x, int y, int cheese_loc[10][2], int cheeses);
+int check_cats(int x, int y, int cat_loc[10][2], int cats);
+int check_cheese(int x, int y, int cheese_loc[10][2], int cheeses);
+void bfs_search(double gr[graph_size][4], int path[graph_size][2], int visit_order[size_X][size_Y], 
+	int cat_loc[10][2], int cats, int cheese_loc[10][2], int cheeses, int mouse_loc[1][2]);
 
 #endif
 

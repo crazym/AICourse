@@ -176,16 +176,16 @@ void search(double gr[graph_size][4], int path[graph_size][2], int visit_order[s
  *		- Document your design (how you implemented the solution, and why) in the report
  *
  ********************************************************************************************************/
+ if (mode == 0) {
+ 	bfs_search(gr, path, visit_order, cat_loc, cats, cheese_loc, cheeses, mouse_loc);
+ }
 
- // Stub so that the code compiles/runs - This will be removed and replaced by your code!
+ return;
+}
 
- // path[0][0]=mouse_loc[0][0];
- // path[0][1]=mouse_loc[0][1];
- // path[1][0]=mouse_loc[0][0];
- // path[1][1]=mouse_loc[0][1];
-
- // BFS using queue (FIFO)
- // if mode == 1 {}
+// BFS search
+void bfs_search(double gr[graph_size][4], int path[graph_size][2], int visit_order[size_X][size_Y], 
+	int cat_loc[10][2], int cats, int cheese_loc[10][2], int cheeses, int mouse_loc[1][2]){
  int node_order = 0;
  int front_pointer = 0;
  int node_queue[graph_size][2];
@@ -198,41 +198,23 @@ void search(double gr[graph_size][4], int path[graph_size][2], int visit_order[s
  // initialize all nodes' visited status to false
  int visited[size_X][size_Y] = {0};
 
+ // initialization on mouse loc as starting point
  node_queue[0][0]=mouse_loc[0][0];
  node_queue[0][1]=mouse_loc[0][1];
-
  node_parent[mouse_loc[0][0]][mouse_loc[0][1]] = 0;
- 
  visited[mouse_loc[0][0]][mouse_loc[0][1]] = 1;
  visit_order[cur_x][cur_y] = 0;
  node_order++;
 
-for (int i = 0; i<cheeses; i++) {
-	fprintf(stderr, "(%d, %d)\n", cheese_loc[i][0], cheese_loc[i][1]);
-}
  while (front_pointer < graph_size && front_pointer < node_order) {
  	cur_x = node_queue[front_pointer][0];
  	cur_y = node_queue[front_pointer][1];
  	cur_index = cur_x + (cur_y*size_X);
 
  	visit_order[cur_x][cur_y] = front_pointer;
-/* 	fprintf(stderr, "at (%d, %d) index is %d\n", cur_x, cur_y, cur_index);
- 	loop through all nieghbors
- 	for (int i=1; i<4; i++) {
- 		int x,y, ngbr_index;
- 		// get their index and corresponding 
- 		ngbr_index = gr[cur_index][i];
- 		x = ngbr_index % size_X;
- 		y = ngbr_index / size_Y;
- 		if ((ngbr_index == 1) && ( checkCats(x, y, cat_loc, cats) == 0)){
- 			node_order++;
- 			node_queue[node_order][0] = x;
- 			node_queue[node_order][1] = y;
- 		}
- 	}
-*/
+
  	// exit while loop if found a cheese
- 	if (checkCheese(cur_x, cur_y, cheese_loc, cheeses)) {
+ 	if (check_cheese(cur_x, cur_y, cheese_loc, cheeses)) {
  		backtrack[path_len][0] = cur_x;
  		backtrack[path_len][1] = cur_y;
  		path_len++;
@@ -244,7 +226,7 @@ for (int i = 0; i<cheeses; i++) {
  	x = cur_x;
  	y = cur_y - 1;
  	// ngbr_index = x + (y*size_X);
-	if ((gr[cur_index][0] == 1) && ( checkCats(x, y, cat_loc, cats) == 0) && visited[x][y] == 0){
+	if ((gr[cur_index][0] == 1) && ( check_cats(x, y, cat_loc, cats) == 0) && visited[x][y] == 0){
 		visited[x][y] = 1;
 		node_parent[x][y] = front_pointer;
 		node_queue[node_order][0] = x;
@@ -256,7 +238,7 @@ for (int i = 0; i<cheeses; i++) {
  	x = cur_x + 1;
  	y = cur_y;
  	// ngbr_index = x + (y*size_X);
-	if ((gr[cur_index][1] == 1) && ( checkCats(x, y, cat_loc, cats) == 0) && visited[x][y] == 0){
+	if ((gr[cur_index][1] == 1) && ( check_cats(x, y, cat_loc, cats) == 0) && visited[x][y] == 0){
 		visited[x][y] = 1;
 		node_parent[x][y] = front_pointer;
 		node_queue[node_order][0] = x;
@@ -268,7 +250,7 @@ for (int i = 0; i<cheeses; i++) {
  	x = cur_x;
  	y = cur_y + 1;
  	// ngbr_index = x + (y*size_X);
-	if ((gr[cur_index][2] == 1) && ( checkCats(x, y, cat_loc, cats) == 0) && visited[x][y] == 0){
+	if ((gr[cur_index][2] == 1) && ( check_cats(x, y, cat_loc, cats) == 0) && visited[x][y] == 0){
 		visited[x][y] = 1;
 		node_parent[x][y] = front_pointer;
 		node_queue[node_order][0] = x;
@@ -280,7 +262,7 @@ for (int i = 0; i<cheeses; i++) {
  	x = cur_x - 1;
  	y = cur_y;
  	// ngbr_index = x + (y*size_X);
-	if ((gr[cur_index][3] == 1) && ( checkCats(x, y, cat_loc, cats) == 0) && visited[x][y] == 0){
+	if ((gr[cur_index][3] == 1) && ( check_cats(x, y, cat_loc, cats) == 0) && visited[x][y] == 0){
 		visited[x][y] = 1;
 		node_parent[x][y] = front_pointer;
 		node_queue[node_order][0] = x;
@@ -290,48 +272,38 @@ for (int i = 0; i<cheeses; i++) {
 
 	// move front pointer for next round expansion
 	front_pointer++;
- 	fprintf(stderr, "front pointer at %d while node order at %d\n", front_pointer, node_order);
+ 	// fprintf(stderr, "front pointer at %d while node order at %d\n", front_pointer, node_order);
  } 
 
  // found a cheese, start backtracking
  int tmp_counter = node_parent[backtrack[0][0]][backtrack[0][1]];
- fprintf(stderr, "mouse loc at (%d, %d)\n", mouse_loc[0][0], mouse_loc[0][1]);
- fprintf(stderr, "cheese loc at (%d, %d)\n", backtrack[0][0], backtrack[0][1]);
+ // fprintf(stderr, "mouse loc at (%d, %d)\n", mouse_loc[0][0], mouse_loc[0][1]);
+ // fprintf(stderr, "cheese loc at (%d, %d)\n", backtrack[0][0], backtrack[0][1]);
 
  while (! (node_queue[tmp_counter][0] == mouse_loc[0][0] && node_queue[tmp_counter][1] == mouse_loc[0][1])) {
- 	fprintf(stderr, "backtrack parent to (%d, %d) at path_len=%d and node_order=%d\n", 
+/* 	fprintf(stderr, "backtrack parent to (%d, %d) at path_len=%d and node_order=%d\n", 
  		node_queue[tmp_counter][0], node_queue[tmp_counter][1], path_len, 
  		tmp_counter);
-
+*/
  	backtrack[path_len][0] = node_queue[tmp_counter][0];
  	backtrack[path_len][1] = node_queue[tmp_counter][1];
- 	// set next counter to be the visit order of parent node
+ 	// set next counter to be the visit order of parent node in queue
  	tmp_counter = node_parent[backtrack[path_len][0]][backtrack[path_len][1]];
  	path_len++;
-
- 	//  fprintf(stderr, "find mouse? %d when parent_node is (%d, %d)\n", 
-		// ! (node_queue[tmp_counter][0] == mouse_loc[0][0] && node_queue[tmp_counter][1] == mouse_loc[0][1]),
-		// node_parent[tmp_counter][0], node_parent[tmp_counter][1]);
  }
 
  backtrack[path_len][0] = mouse_loc[0][0];
  backtrack[path_len][1] = mouse_loc[0][1];
- fprintf(stderr, "%d \n", path_len);
 
- // if (path_len > 1) {
-	for (int i=0; i <= path_len; i++) {
-		fprintf(stderr, "backtracking at (%d, %d)\n", backtrack[path_len-i][0], backtrack[path_len-i][1]);
-		path[i][0] = backtrack[path_len-i][0];
-		path[i][1] = backtrack[path_len-i][1];
-	}
+ for (int i=0; i <= path_len; i++) {
+	fprintf(stderr, "backtracking at (%d, %d)\n", backtrack[path_len-i][0], backtrack[path_len-i][1]);
+	path[i][0] = backtrack[path_len-i][0];
+	path[i][1] = backtrack[path_len-i][1];
+ }
+ }
  
- // failed? empty queue
 
- return;
-}
-
-
-int checkCats(int x, int y, int cat_loc[10][2], int cats){
+int check_cats(int x, int y, int cat_loc[10][2], int cats){
 	for (int i = 0; i<cats; i++) {
 		if (x == cat_loc[i][0] && y == cat_loc[i][1])
 			return 1;
@@ -339,9 +311,8 @@ int checkCats(int x, int y, int cat_loc[10][2], int cats){
 	return 0;
 }
 
-int checkCheese(int x, int y, int cheese_loc[10][2], int cheeses){
+int check_cheese(int x, int y, int cheese_loc[10][2], int cheeses){
 	for (int i = 0; i<cheeses; i++) {
-		// fprintf(stderr, "(%d, %d)\n", cheese_loc[i][0], cheese_loc[i][1]);
 		if (x == cheese_loc[i][0] && y == cheese_loc[i][1])
 			return 1;
 	}
