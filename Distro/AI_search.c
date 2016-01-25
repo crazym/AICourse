@@ -179,25 +179,35 @@ void search(double gr[graph_size][4], int path[graph_size][2], int visit_order[s
  if (mode == 0) {
  	bfs_search(gr, path, visit_order, cat_loc, cats, cheese_loc, cheeses, mouse_loc);
  } else if (mode == 1) {
- 	int path_len;
-    int node_stack[graph_size][2], backtrack[graph_size][2];
-    int visited[size_X][size_Y] = {0};
-    int node_parent[size_X][size_Y];
- 	path_len = dfs_search(0, node_stack, backtrack, visited, node_parent, gr, path, visit_order, cat_loc, cats, cheese_loc, cheeses, mouse_loc);
-
+ 	// int path_len;
+  //   int node_stack[graph_size][2], backtrack[graph_size][2];
+  //   int visited[size_X][size_Y] = {0};
+  //   int node_parent[size_X][size_Y];
+ 	   dfs_search(0, node_stack, backtrack, visited, node_parent, gr, path, visit_order, cat_loc, cats, cheese_loc, cheeses, mouse_loc);
+    // path_len = dfs_search(0, node_stack, backtrack, visited, node_parent, gr, path, visit_order, cat_loc, cats, cheese_loc, cheeses, mouse_loc);
  // 	for (int i=0; i <= path_len; i++) {
 	// 	fprintf(stderr, "backtracking at (%d, %d)\n", backtrack[path_len-i][0], backtrack[path_len-i][1]);
 	// 	path[i][0] = backtrack[path_len-i][0];
 	// 	path[i][1] = backtrack[path_len-i][1];
 	// }
+ } else if (mode == 2) {
+ 	// astar_search()
+ } else{
+ 	// notify the user
  }
 
  return;
 }
 
-// BFS search
+/*BFS search
+*
+* We use the front_pointer to keep track of expanded node, and node_order to 
+* keep track of nodes in queue. node_parent keeps track of the index of parent of node at (x,y)
+*
+*/
 void bfs_search(double gr[graph_size][4], int path[graph_size][2], int visit_order[size_X][size_Y], 
 	int cat_loc[10][2], int cats, int cheese_loc[10][2], int cheeses, int mouse_loc[1][2]){
+ 
  int node_order = 0;
  int front_pointer = 0;
  int node_queue[graph_size][2];
@@ -218,6 +228,7 @@ void bfs_search(double gr[graph_size][4], int path[graph_size][2], int visit_ord
  visit_order[cur_x][cur_y] = 0;
  node_order++;
 
+ // loop while queue is not empty
  while (front_pointer < graph_size && front_pointer < node_order) {
  	cur_x = node_queue[front_pointer][0];
  	cur_y = node_queue[front_pointer][1];
@@ -232,12 +243,11 @@ void bfs_search(double gr[graph_size][4], int path[graph_size][2], int visit_ord
  		path_len++;
  		break;
  	}
-
+ 	// check neighours in order (TODO: needs refactoring on duplicate code...)
  	int x,y;
  	// check top
  	x = cur_x;
  	y = cur_y - 1;
- 	// ngbr_index = x + (y*size_X);
 	if ((gr[cur_index][0] == 1) && ( check_cats(x, y, cat_loc, cats) == 0) && visited[x][y] == 0){
 		visited[x][y] = 1;
 		node_parent[x][y] = front_pointer;
@@ -249,7 +259,6 @@ void bfs_search(double gr[graph_size][4], int path[graph_size][2], int visit_ord
  	// check right
  	x = cur_x + 1;
  	y = cur_y;
- 	// ngbr_index = x + (y*size_X);
 	if ((gr[cur_index][1] == 1) && ( check_cats(x, y, cat_loc, cats) == 0) && visited[x][y] == 0){
 		visited[x][y] = 1;
 		node_parent[x][y] = front_pointer;
@@ -261,7 +270,6 @@ void bfs_search(double gr[graph_size][4], int path[graph_size][2], int visit_ord
  	// check bottom
  	x = cur_x;
  	y = cur_y + 1;
- 	// ngbr_index = x + (y*size_X);
 	if ((gr[cur_index][2] == 1) && ( check_cats(x, y, cat_loc, cats) == 0) && visited[x][y] == 0){
 		visited[x][y] = 1;
 		node_parent[x][y] = front_pointer;
@@ -273,7 +281,6 @@ void bfs_search(double gr[graph_size][4], int path[graph_size][2], int visit_ord
  	// check left
  	x = cur_x - 1;
  	y = cur_y;
- 	// ngbr_index = x + (y*size_X);
 	if ((gr[cur_index][3] == 1) && ( check_cats(x, y, cat_loc, cats) == 0) && visited[x][y] == 0){
 		visited[x][y] = 1;
 		node_parent[x][y] = front_pointer;
@@ -312,7 +319,7 @@ void bfs_search(double gr[graph_size][4], int path[graph_size][2], int visit_ord
 	path[i][0] = backtrack[path_len-i][0];
 	path[i][1] = backtrack[path_len-i][1];
  }
- }
+}
  
 // DFS search
 int dfs_search(int node_count, int node_stack[graph_size][2], int backtrack[graph_size][2], 
