@@ -180,10 +180,10 @@ void search(double gr[graph_size][4], int path[graph_size][2], int visit_order[s
  	bfs_search(gr, path, visit_order, cat_loc, cats, cheese_loc, cheeses, mouse_loc);
  } else if (mode == 1) {
  	// int path_len;
-  //   int node_stack[graph_size][2], backtrack[graph_size][2];
-  //   int visited[size_X][size_Y] = {0};
-  //   int node_parent[size_X][size_Y];
- 	   dfs_search(0, node_stack, backtrack, visited, node_parent, gr, path, visit_order, cat_loc, cats, cheese_loc, cheeses, mouse_loc);
+    int node_stack[graph_size][2], backtrack[graph_size][2];
+    int visited[size_X][size_Y] = {0};
+    int node_parent[size_X][size_Y];
+ 	dfs_search(0, node_stack, backtrack, visited, node_parent, gr, path, visit_order, cat_loc, cats, cheese_loc, cheeses, mouse_loc);
     // path_len = dfs_search(0, node_stack, backtrack, visited, node_parent, gr, path, visit_order, cat_loc, cats, cheese_loc, cheeses, mouse_loc);
  // 	for (int i=0; i <= path_len; i++) {
 	// 	fprintf(stderr, "backtracking at (%d, %d)\n", backtrack[path_len-i][0], backtrack[path_len-i][1]);
@@ -341,12 +341,13 @@ int dfs_search(int node_count, int node_stack[graph_size][2], int backtrack[grap
 	 	cat_loc, cats, cheese_loc, cheeses, mouse_loc);
 
  } else {
- 	int orig_count = node_count;
- 	cur_x = node_stack[node_count-1][0];
- 	cur_y = node_stack[node_count-1][1];
+ 	int orig_count;
+ 	orig_count = node_count-1;
+ 	cur_x = node_stack[orig_count][0];
+ 	cur_y = node_stack[orig_count][1];
  	cur_index = cur_x + (cur_y*size_X);
- 	fprintf(stderr, "node at (%d, %d) at depth %d\n", cur_x, cur_y, node_count-1);
- 	visit_order[cur_x][cur_y] = node_count-1;
+ 	fprintf(stderr, "node at (%d, %d) at depth %d\n", cur_x, cur_y, orig_count);
+ 	visit_order[cur_x][cur_y] = orig_count;
 
  	// exit recursion if found a cheese
  	if (check_cheese(cur_x, cur_y, cheese_loc, cheeses)) {
@@ -404,7 +405,7 @@ int dfs_search(int node_count, int node_stack[graph_size][2], int backtrack[grap
 
 	fprintf(stderr, "orig count = %d and new count is %d\n", orig_count, node_count);
 	// int search_depth = node_count;
-	if ((orig_count == node_count) && (orig_count != 1)) {
+	if ((orig_count == node_count-1) && (orig_count != 0)) {
 		node_count = node_parent[cur_x][cur_y];
 		// fprintf(stderr, "search_depth = %d\n", search_depth);
 	}
