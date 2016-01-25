@@ -33,6 +33,7 @@ but explain carefully when needed.
 1 .- (1 marks) Of BFS and DFS, which search algorithm yields the best results? (i.e. which is more likely
      to get the mouse to the cheese safely before being eaten?)
 
+BFS is more likely to yield good results, as once DFS goes into a wrong direction (i.e away from the goal), it's more likely to spend a lot of time walking around, where bfs usually find the shorted path.
 
 2 .- (1 marks) Does this mean that in general BFS is a better search algorithm? (yes/no and give reasons to
      support your answer based on your observations)
