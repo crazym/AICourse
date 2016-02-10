@@ -179,17 +179,12 @@ void search(double gr[graph_size][4], int path[graph_size][2], int visit_order[s
  if (mode == 0) {
  	bfs_search(gr, path, visit_order, cat_loc, cats, cheese_loc, cheeses, mouse_loc);
  } else if (mode == 1) {
- 	// int path_len;
     int node_stack[graph_size][2], backtrack[graph_size][2];
     int visited[size_X][size_Y] = {0};
     int node_parent[size_X][size_Y];
- 	dfs_search(0, node_stack, backtrack, visited, node_parent, gr, path, visit_order, cat_loc, cats, cheese_loc, cheeses, mouse_loc);
-    // path_len = dfs_search(0, node_stack, backtrack, visited, node_parent, gr, path, visit_order, cat_loc, cats, cheese_loc, cheeses, mouse_loc);
- // 	for (int i=0; i <= path_len; i++) {
-	// 	fprintf(stderr, "backtracking at (%d, %d)\n", backtrack[path_len-i][0], backtrack[path_len-i][1]);
-	// 	path[i][0] = backtrack[path_len-i][0];
-	// 	path[i][1] = backtrack[path_len-i][1];
-	// }
+ 	dfs_search(0, 0, node_stack, visited, node_parent, 
+ 		gr, path, visit_order, cat_loc, cats, cheese_loc, cheeses, mouse_loc);
+
  } else if (mode == 2) {
  	// astar_search()
  } else{
@@ -322,22 +317,19 @@ void bfs_search(double gr[graph_size][4], int path[graph_size][2], int visit_ord
 }
  
 // DFS search
-int dfs_search(int node_count, int node_stack[graph_size][2], int backtrack[graph_size][2], 
+int dfs_search(int node_count, int node_order, int node_stack[graph_size][2],
 	int visited[size_X][size_Y], int node_parent[size_X][size_Y],
 	double gr[graph_size][4], int path[graph_size][2], int visit_order[size_X][size_Y], 
 	int cat_loc[10][2], int cats, int cheese_loc[10][2], int cheeses, int mouse_loc[1][2]){
- 
+
  int cur_x, cur_y, cur_index;
- // fprintf(stderr, "node count = %d\n", node_count);
  if (node_count == 0) {
 	 // base case on mouse loc as starting point
 	 node_stack[node_count][0]=mouse_loc[0][0];
 	 node_stack[node_count][1]=mouse_loc[0][1];
 	 node_parent[mouse_loc[0][0]][mouse_loc[0][1]] = 0;
-	 // node_parent[mouse_loc[0][0]][mouse_loc[0][1]] = 0;
 	 visited[mouse_loc[0][0]][mouse_loc[0][1]] = 1;
-  	 // fprintf(stderr, "node count = %d\n", node_count+1);
-	 return dfs_search(node_count+1, node_stack, backtrack, visited, node_parent, gr, path, visit_order, 
+	 return dfs_search(node_count+1, node_order+1, node_stack, visited, node_parent, gr, path, visit_order, 
 	 	cat_loc, cats, cheese_loc, cheeses, mouse_loc);
 
  } else {
@@ -346,15 +338,16 @@ int dfs_search(int node_count, int node_stack[graph_size][2], int backtrack[grap
  	cur_x = node_stack[orig_count][0];
  	cur_y = node_stack[orig_count][1];
  	cur_index = cur_x + (cur_y*size_X);
- 	fprintf(stderr, "node at (%d, %d) at depth %d\n", cur_x, cur_y, orig_count);
- 	visit_order[cur_x][cur_y] = orig_count;
+ 	fprintf(stderr, "node at (%d, %d) at depth %d\n", cur_x, cur_y, node_order);
+ 	visit_order[cur_x][cur_y] = node_order;
 
  	// exit recursion if found a cheese
  	if (check_cheese(cur_x, cur_y, cheese_loc, cheeses)) {
- 		// backtrack[0][0] = cur_x;
- 		// backtrack[0][1] = cur_y;
- 		path[node_count][0] = cur_x;
- 		path[node_count][1] = cur_y;
+ 		// fill in the rest of the path array with cheeses location to avoid SegFault
+		for (int i=node_order; i<graph_size; i++) {
+		 	path[i][0] = cur_x;
+		 	path[i][1] = cur_y;
+		}
  		return 1;
  	}
 
@@ -403,22 +396,20 @@ int dfs_search(int node_count, int node_stack[graph_size][2], int backtrack[grap
 	 	node_count++;
 	}
 
-	fprintf(stderr, "orig count = %d and new count is %d\n", orig_count, node_count);
-	// int search_depth = node_count;
+	// backtrack to parent if find a dead-end path
+	// hmm, seems to have something wrong here, no time to check QAQ
 	if ((orig_count == node_count-1) && (orig_count != 0)) {
 		node_count = node_parent[cur_x][cur_y];
-		// fprintf(stderr, "search_depth = %d\n", search_depth);
 	}
+	// recursive case
 	int path_len;
-	// fprintf(stderr, "search_depth = %d and new count is %d\n", search_depth, node_count);
-	path_len = dfs_search(node_count, node_stack, backtrack, visited, node_parent, gr, path, visit_order, 
+	node_order++;
+	path_len = dfs_search(node_count, node_order, node_stack, visited, node_parent, gr, path, visit_order, 
 		cat_loc, cats, cheese_loc, cheeses, mouse_loc);
 
 	if (path_len > 0){
-		// backtrack[path_len+1][0] = cur_x;
-		// backtrack[path_len+1][1] = cur_y;
-		path[node_count][0] = cur_x;
-		path[node_count][1] = cur_y;
+		path[node_order][0] = cur_x;
+		path[node_order][1] = cur_y;
 		return path_len+1;
 	}
  } 
