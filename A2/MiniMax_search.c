@@ -165,6 +165,7 @@ double MiniMax(double gr[graph_size][4], int path[1][2], double minmax_cost[size
     int util;
     int child_count = 0;
     int child_list[4][2];
+    int my_path[4][2];
     int child_utilities[4];
     int max_util, min_util, best_utility;
 	int best_c_index;
@@ -174,10 +175,11 @@ double MiniMax(double gr[graph_size][4], int path[1][2], double minmax_cost[size
 
     int my_mouse_location[1][2], my_cat_location[10][2];
 
-    //initialization: duplicate current positions
+    //initialization: duplicate current positions as local game state
 	my_mouse_location[0][0] = mouse_loc[0][0];
 	my_mouse_location[0][1] = mouse_loc[0][1];
 	for (int i=0; i< cats; i++) {	
+		// fprintf(stderr, "cat location at %d is (%d, %d)\n", i, cat_loc[i][0], cat_loc[i][1]);
 		my_cat_location[i][0] = cat_loc[i][0];
 		my_cat_location[i][1] = cat_loc[i][1];
 	}
@@ -192,6 +194,8 @@ double MiniMax(double gr[graph_size][4], int path[1][2], double minmax_cost[size
     }
  	cur_index = cur_x + (cur_y*size_X);
 
+	// if (depth == maxDepth)
+		// printf("at depth %d\n", depth);
     // if the current move results in a terminal configuration or max search depth has been reached
     // call utility functin to get a value and 
     // TODO update the path?
@@ -200,11 +204,13 @@ double MiniMax(double gr[graph_size][4], int path[1][2], double minmax_cost[size
 		// printf("mouse location (%d, %d)\ncheese location location (%d, %d)\ncat location (%d, %d)\n",
 		// 		mouse_loc[0][0], mouse_loc[0][1], cheese_loc[0][0], cheese_loc[0][1],
 		// 		cat_loc[0][0], cheese_loc[0][1]);
+		// printf("in terminal node at depth %d\n", depth);
 		best_utility = utility(cat_loc, cheese_loc, mouse_loc, cats, cheeses, depth, gr);
+		path[0][0] = cur_x;
+		path[0][1] = cur_y;
+		return best_utility;
 	} else { // otherwise call MiniMax recursively to find out what happend deeper into the tree
 		
-		printf("in recursive call at depth %d\n", depth);
-
 		// find all available successors
 		int nghb_x_trbl[4] = {0, 1, 0, -1};
 		int nghb_y_trbl[4] = {-1, 0, 1, 0};
@@ -213,14 +219,19 @@ double MiniMax(double gr[graph_size][4], int path[1][2], double minmax_cost[size
 			if (gr[cur_index][i]) { // TODO check for cats and visited?
 				child_list[child_count][0] = cur_x + nghb_x_trbl[i];
 				child_list[child_count][1] = cur_y + nghb_y_trbl[i];
-				// printf("added %dth children (%d, %d)\n", child_count, child_list[i][0], child_list[i][1]);
+				// printf("added %dth children (%d, %d)\n", child_count, child_list[child_count][0], child_list[child_count][1]);
 				child_count++;
 			}
 		}
 
 		// max_util = -99999;
 		// min_util = 99999;
-		for (int c=0; c <= child_count; c++) {
+
+		// ah! increment depth and agentId out of the loop...
+		int next_agendID, next_depth;
+		next_agendID = (agentId+1) % (cats+1);
+		next_depth = depth+1;
+		for (int c=0; c < child_count; c++) {
 			// printf("check %dth children (%d, %d)\n", c, child_list[c][0], child_list[c][1]);
 			if (agentId == 0) {
 				my_mouse_location[0][0] = child_list[c][0];
@@ -230,13 +241,15 @@ double MiniMax(double gr[graph_size][4], int path[1][2], double minmax_cost[size
 		    	my_cat_location[cur_cat][0] = child_list[c][0];
 		    	my_cat_location[cur_cat][1] = child_list[c][1];
 		    }
-    		printf("when makeing the call for agent %d at depth %d:\nmouse location (%d, %d)\ncat location (%d, %d)\n",
-				agentId, depth, my_mouse_location[0][0], my_mouse_location[0][1],
-				my_cat_location[0][0], my_cat_location[0][1]);
-			util = MiniMax(gr, path, minmax_cost, my_cat_location, cats, cheese_loc, cheeses, 
-				my_mouse_location, mode, utility, agentId, depth++, maxDepth, alpha, beta);
+    // 		printf("when makeing the call for agent %d at depth %d:\nmouse location (%d, %d)\ncat location (%d, %d)\n",
+				// next_agendID, next_depth, my_mouse_location[0][0], my_mouse_location[0][1],
+				// my_cat_location[0][0], my_cat_location[0][1]);
+			// printf("after incremented at depth %d\n", depth);
+			util = MiniMax(gr, &my_path[c], minmax_cost, my_cat_location, cats, cheese_loc, cheeses, 
+				my_mouse_location, mode, utility, next_agendID, next_depth, maxDepth, alpha, beta);
 			// if (util > max_util) max_util = util;
 			// if (util < min_util) min_util = util;
+			// fprintf(stderr, "get utility %d at depth %d for agent %d\n", util, depth, agentId);
 			child_utilities[c] = util;
 		}
 
@@ -252,9 +265,10 @@ double MiniMax(double gr[graph_size][4], int path[1][2], double minmax_cost[size
 			}
 			// update the minmax_cost array since the location is expanded for the mouse
 			minmax_cost[mouse_loc[0][0]][mouse_loc[0][1]] = best_utility;
+		// otherwise find the min child utility
 		} else {
 			cur_cat = (agentId-1) % cats;
-			printf("current agent is %d with actual id %d\n", cur_cat, agentId);
+			// printf("current agent is %d with actual id %d\n", cur_cat, agentId);
 			// find the best next move
 			best_utility = 99999;
 			for (int c=0; c < child_count; c++) {
@@ -264,9 +278,22 @@ double MiniMax(double gr[graph_size][4], int path[1][2], double minmax_cost[size
 				}
 			}			
 		}
+	
+		if (agentId == 0) {
+			fprintf(stderr, "agentid is %d, currently at (%d, %d)\n", agentId, 
+				cur_x, cur_y);
+			for (int c=0; c < child_count; c++) {
+				fprintf(stderr, "child %d with utility %d at position (%d, %d)\n", c, child_utilities[c], child_list[c][0], child_list[c][1]);
+			}
+			fprintf(stderr, "agentid is %d, best at position (%d, %d) with utillity %d\n\n", agentId, 
+				child_list[best_c_index][0], child_list[best_c_index][1], child_utilities[best_c_index]);
+		}
+
+
 		// update the next move (either in max round or min round)
 		path[0][0] = child_list[best_c_index][0];
-		path[0][1] = child_list[best_c_index][1];
+		path[0][1] = child_list[best_c_index][1];			
+		
 	}
 
 	return best_utility;
@@ -296,15 +323,21 @@ double utility(int cat_loc[10][2], int cheese_loc[10][2], int mouse_loc[1][2], i
  */
 	
 	// mahatton distance to cheese - mahatton distance to cat
-		int dist_cheeses, dist_cats = 0;
+		int dist_cheeses = 0;
+		int dist_cats = 0;
 		for (int i=0; i<cats; i++) {
+			// printf("abs(mouse_loc[0][0] - cat_loc[i][0]) = %d\n", abs(mouse_loc[0][0] - cat_loc[i][0]));
+			// printf("abs(mouse_loc[0][1] - cat_loc[i][1]) = %d\n", abs(mouse_loc[0][1] - cat_loc[i][1]));
 			dist_cats = dist_cats + abs(mouse_loc[0][0] - cat_loc[i][0]) + abs(mouse_loc[0][1] - cat_loc[i][1]);
+			// fprintf(stderr, "dist_cats = %d\n", dist_cats);
 		}
-		for (int i=0; i<cheeses; i++){
-			dist_cheeses = dist_cheeses + abs(mouse_loc[0][0] - cheese_loc[0][0]) + abs(mouse_loc[0][1] - cheese_loc[0][1]);
+
+		for (int j=0; j<cheeses; j++){
+			dist_cheeses = dist_cheeses + abs(mouse_loc[0][0] - cheese_loc[j][0]) + abs(mouse_loc[0][1] - cheese_loc[j][1]);
+			// printf("dist_cheese = %d\n", dist_cheeses);
 		}
-		fprintf(stderr, "current utility at (%d, %d) is %d\n", mouse_loc[0][0], mouse_loc[0][1], dist_cheeses - dist_cats);
-		return dist_cheeses - dist_cats;
+		// fprintf(stderr, "current utility at (%d, %d) is %d\n", mouse_loc[0][0], mouse_loc[0][1], dist_cheeses*10 - dist_cats);
+		return dist_cheeses*10 - dist_cats;
 }
 
 int checkForTerminal(int mouse_loc[1][2],int cat_loc[10][2],int cheese_loc[10][2],int cats,int cheeses)
