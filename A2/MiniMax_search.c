@@ -327,21 +327,123 @@ double utility(int cat_loc[10][2], int cheese_loc[10][2], int mouse_loc[1][2], i
  */
 	
 	// mahatton distance to cheese - mahatton distance to cat
-		int dist_cheeses = 0;
-		int dist_cats = 0;
+		int cur_util=0;
+		int agentId; // MAX(mouse) with id 0 or MIN(cat) node with id in [1:cats]
+
+		int dist_mouse_cheeses[cheeses], dist_mouse_cats[cats];
+		int closest_cheese_dist=0;
+		int closest_cat_dist=0;
+		int num_cats_around;
+		int cur_index;
+		int child_count=0;
+
+		// check depth to determine MAX or MIN node at the leaves
+		agentId = depth % (cats + 1);
+
+
 		for (int i=0; i<cats; i++) {
-			// printf("abs(mouse_loc[0][0] - cat_loc[i][0]) = %d\n", abs(mouse_loc[0][0] - cat_loc[i][0]));
-			// printf("abs(mouse_loc[0][1] - cat_loc[i][1]) = %d\n", abs(mouse_loc[0][1] - cat_loc[i][1]));
-			dist_cats = dist_cats + abs(mouse_loc[0][0] - cat_loc[i][0]) + abs(mouse_loc[0][1] - cat_loc[i][1]);
-			// fprintf(stderr, "dist_cats = %d\n", dist_cats);
+			// dist_mouse_cats = dist_mouse_cats + abs(mouse_loc[0][0] - cat_loc[i][0]) + abs(mouse_loc[0][1] - cat_loc[i][1]);
+			// dist_mouse_cats[i] = abs(mouse_loc[0][0] - cat_loc[i][0]) + abs(mouse_loc[0][1] - cat_loc[i][1]);
+			dist_mouse_cats[i] = manhattan_dist(mouse_loc[0][0], mouse_loc[0][1], cat_loc[i][0], cat_loc[i][1]);
+			if (dist_mouse_cats[i] > closest_cat_dist) {
+				closest_cat_dist = dist_mouse_cats[i];
+			}
+		}
+		// fprintf(stderr, "dist_mouse_cats = %d\n", dist_mouse_cats);
+
+		for (int i=0; i<cheeses; i++){
+			// dist_mouse_cheeses = dist_mouse_cheeses + abs(mouse_loc[0][0] - cheese_loc[j][0]) + abs(mouse_loc[0][1] - cheese_loc[j][1]);
+			// dist_mouse_cheeses[i] = abs(mouse_loc[0][0] - cheese_loc[i][0]) + abs(mouse_loc[0][1] - cheese_loc[i][1]);
+			dist_mouse_cheeses[i] = manhattan_dist(mouse_loc[0][0], mouse_loc[0][1], cheese_loc[i][0], cheese_loc[i][1]);
+			if (dist_mouse_cheeses[i] > closest_cheese_dist) {
+				closest_cheese_dist = dist_mouse_cheeses[i];
+			}
 		}
 
-		for (int j=0; j<cheeses; j++){
-			dist_cheeses = dist_cheeses + abs(mouse_loc[0][0] - cheese_loc[j][0]) + abs(mouse_loc[0][1] - cheese_loc[j][1]);
-			// printf("dist_cheese = %d\n", dist_cheeses);
+		// if at Mouse
+		if (agentId == 0) {
+			// greatly award if find a cheese
+			if (check_cheese(mouse_loc[0][0], mouse_loc[0][1], cheese_loc, cheeses)) {
+				cur_util = cur_util + 999;
+			// and punish hardly if find a mouse
+			} else if (check_cats(mouse_loc[0][0], mouse_loc[0][1], cat_loc, cats)) {
+				cur_util = cur_util - 999;
+			} else { 
+				// otherwise choose node with max mouse_cat_dist and min mouse_cheese_dist
+				// with a preference to mouse closer to a cheese
+				cur_util = cur_util + closest_cat_dist*2 - closest_cheese_dist*4;
+			}
+		
+			//punish if at a dead-end
+			cur_index = mouse_loc[0][0] + (mouse_loc[0][1]*size_X);
+			int nghb_x_trbl[4] = {0, 1, 0, -1};
+			int nghb_y_trbl[4] = {-1, 0, 1, 0};
+			
+			for (int i=0; i<4; i++) {
+				if (gr[cur_index][i]) {
+					child_count++;
+				}
+			}
+			if (child_count == 1) {
+				cur_util = cur_util - 1000;
+				// fprintf(stderr, "deadend at (%d, %d) with utility %d\n", mouse_loc[0][0], mouse_loc[0][1], cur_util);
+			}
+
+			// fprintf(stderr, "current agent %d at (%d, %d) with utility %d\n", agentId, mouse_loc[0][0], mouse_loc[0][1], cur_util);
+
+		} else { // at a cat
+			// decrease utility greatly if meet a mouse
+			if (cat_loc[agentId][0] == mouse_loc[0][0] && cat_loc[agentId][1] == mouse_loc[0][1]) {
+				cur_util = cur_util - 999;
+			} else {
+				// TODO good for cat if cat is closer to cheese than mouse is
+				// otherwise cat tend to choose move with min mouse_cat_dist
+				int dist_mouse;
+				dist_mouse = manhattan_dist(mouse_loc[0][0], mouse_loc[0][1], cat_loc[agentId][0], cat_loc[agentId][1]);
+				cur_util = cur_util - dist_mouse*5;
+			}
+
+			// fprintf(stderr, "current agent %d at (%d, %d) with utility %d\n", agentId, cat_loc[agentId][0], cat_loc[agentId][1], cur_util);
 		}
-		// fprintf(stderr, "current utility at (%d, %d) is %d\n", mouse_loc[0][0], mouse_loc[0][1], dist_cheeses*10 - dist_cats);
-		return dist_cheeses*10 - dist_cats;
+
+		// avoid deadlock
+		// cur_util = cur_util - depth;
+		// if (closest_cat_dist > 2*depth) {
+		// 	cur_util = -closest_cheese_dist;
+		// } else{
+		// 	cur_util = (closest_cat_dist - closest_cheese_dist)*3;
+		// }
+		// punish if the mouse is closer to a cat than a cheese
+		// if (closest_cat_dist < closest_cheese_dist) {
+		// 	cur_util = cur_util - closest_cat_dist*3 - closest_cheese_dist;
+		// } else{
+		// 	cur_util = cur_util + closest_cat_dist*2 + closest_cheese_dist*5;
+		// }
+		// cur_util = (closest_cat_dist - closest_cheese_dist)*3;
+
+
+		// psrintf("dist_cheese = %d\n", dist_mouse_cheeses);
+		// fprintf(stderr, "current utility at (%d, %d) is %d\n", mouse_loc[0][0], mouse_loc[0][1], dist_mouse_cheeses*10 - dist_mouse_cats);
+		return cur_util;
+}
+
+int manhattan_dist(int x1, int y1, int x2, int y2){
+	return abs(x1 - x2) + abs(y1 - y2);
+}
+int check_cats(int x, int y, int cat_loc[10][2], int cats){
+	for (int i = 0; i<cats; i++) {
+		if (x == cat_loc[i][0] && y == cat_loc[i][1])
+			return 1;
+	}
+	return 0;
+}
+
+int check_cheese(int x, int y, int cheese_loc[10][2], int cheeses){
+	for (int i = 0; i<cheeses; i++) {
+		if (x == cheese_loc[i][0] && y == cheese_loc[i][1])
+			return 1;
+	}
+	return 0;
 }
 
 int checkForTerminal(int mouse_loc[1][2],int cat_loc[10][2],int cheese_loc[10][2],int cats,int cheeses)
