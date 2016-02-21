@@ -206,6 +206,8 @@ double MiniMax(double gr[graph_size][4], int path[1][2], double minmax_cost[size
 		// 		cat_loc[0][0], cheese_loc[0][1]);
 		// printf("in terminal node at depth %d\n", depth);
 		best_utility = utility(cat_loc, cheese_loc, mouse_loc, cats, cheeses, depth, gr);
+		// fprintf(stderr, "current utility at (%d, %d) is %d\n", cur_x, cur_y, best_utility);
+
 		path[0][0] = cur_x;
 		path[0][1] = cur_y;
 		return best_utility;
@@ -279,9 +281,9 @@ double MiniMax(double gr[graph_size][4], int path[1][2], double minmax_cost[size
 			}			
 		}
 	
-		if (agentId == 0) {
-			fprintf(stderr, "agentid is %d, currently at (%d, %d)\n", agentId, 
-				cur_x, cur_y);
+		if (depth == 0) {
+			fprintf(stderr, "agentid is %d, currently at (%d, %d) at depth %d\n", agentId, 
+				cur_x, cur_y, depth);
 			for (int c=0; c < child_count; c++) {
 				fprintf(stderr, "child %d with utility %d at position (%d, %d)\n", c, child_utilities[c], child_list[c][0], child_list[c][1]);
 			}
@@ -290,9 +292,11 @@ double MiniMax(double gr[graph_size][4], int path[1][2], double minmax_cost[size
 		}
 
 
-		// update the next move (either in max round or min round)
-		path[0][0] = child_list[best_c_index][0];
-		path[0][1] = child_list[best_c_index][1];			
+		// update the next move for the mouse (NOT either in max round or min round)
+		if (depth == 0) {
+			path[0][0] = child_list[best_c_index][0];
+			path[0][1] = child_list[best_c_index][1];
+		}			
 		
 	}
 
