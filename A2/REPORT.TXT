@@ -12,9 +12,9 @@ ________________________________________________
 
 Student Name (last, first):
 
-Student number:
+Student number: 999590633 
 
-UTORid:
+UTORid: zhangmao    
 
 READ THIS AND SIGN YOUR NAME AT THE END:
 
@@ -22,7 +22,7 @@ READ THIS AND SIGN YOUR NAME AT THE END:
 honesty and plaguarism. All work submitted as part
 of this assignment is my own.
 
-	Signed: _(your name goes here)__
+	Signed: _Minty Zhang__
 
 
 (-5 marks for failing to provide the identifying
@@ -38,24 +38,66 @@ but explain carefully when needed.
      a single, meaningful value. Convince us that your utility
      makes sense!
 
+    * calculate distance in terms of vector norm (a^2 + b^2)
+      since this way moving against, aside towards a cheese will have different utility
+
+    * first it finds the closest cat and cheese around the mouse:
+        if the cat is far away enough from the mouse, no need to worry about it,
+          so just find the next move closer to the cheese
+        else find the move with greater distance to cats but smaller distance to cheese
+
+    * award if the node is a cheese, prefer to eat it!
+    * punish if a cat is around, since mouse will be in risk
+    * punish hardly if terminal node at a deadend, easily deadlocked if get into it
+    * finally, adjust based on depth,
+      in favour of node with shorter path if they have the same utility
+
 2 .- (2 marks) Ignoring computation time, what is the effect of
      search depth (number of turns) on the chances of the mouse
      winning the game. 
+
+     Mouse are more likely to win the game if search depth is greater.
+     Since with smaller search depth it's very easy to get a deadlock, 
+     where moving in any direction gives the same utility, and the mouse
+     will move back and forth again and again to always think the last step
+     gives the best utility.
+
 
 3 .- (2 marks) What situations will cause your mouse to lose?
      can these be fixed either with the utility function, or
      by changing the search depth? if so, how?
 
+     If the cat is not smart enough to move towards my mouse, 
+     the utility won't vary too much in any direction since that only considers their distance to the cheese,
+     thus it will easily get stucked in a deadlock/loops by moving back and forth again and again, no matter what search depth is.
+     (try ./MiniMax_search 2243 1 6 0 10 0.8)
+
+     Might be fixed by always consider the cat location, but that makes it harder to win in general cases,
+     as it's uncessary to think about cats if they are too far away; so it doesn't help the whole situation.
+
+     Also my mouse failed eaily if the cats are too smart, couldn't come up with any better solutions! QAQ
+
 4 .- (2 marks) Compare cats with smartness=.8 against cats with
      smartness=1 - which are harder for your mouse to beat?
      why do you think that is?
 
+     smartness=1 is harder to beat. Actually, I didn't find my mouse beating any smartness-1 cat yet...
+     I guess the cat used a different approach rather than the one we assumed it to move in the minimax search?
+
 5 .- (2 marks) Can the mouse be made unbeatable by having an
      optimal utility function?
+
+      No I don't think so. If the search depth is too small, an optimal utility function can hardly help.
+
 
 6 .- (2 bonus marks) Could a human playing the game in place
       of the mouse do better than your code? (yes, no, and
       a reasonable explanation of why)
+
+      A human are certainly more likely to win the game.
+      S/he is usually able to foresee the closest and safest path with no concerns about search depth,
+      and human can react more quickly to changes in opponents with workaround, rather than following a fixed pattern.
+      No need to worry about getting into loops/deadlocks neither.
 
 _____________________________________________________
 
@@ -65,12 +107,12 @@ doesn't work, or what problems exist.
 	
 	Complete/Working	Partial		Not done
 
-Utility
+Utility     X
  function
 
-MiniMax
+MiniMax     X
 
-Alpha/Beta
+Alpha/Beta   
  pruning
 _____________________________________________________
 
