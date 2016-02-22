@@ -19,6 +19,9 @@
 
 #define __MiniMax_search_header
 
+#define max(A,B) ((A)<(B)?(B):(A))
+#define min(A,B) ((A)>(B)?(B):(A))
+	
 // Generally needed includes
 #include<stdio.h>
 #include<stdlib.h>
