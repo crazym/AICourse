@@ -188,6 +188,11 @@ double MiniMax(double gr[graph_size][4], int path[1][2], double minmax_cost[size
     }
  	cur_index = cur_x + (cur_y*size_X);
 
+ 	if (depth == 0) {
+ 		alpha = -99999;
+ 		beta = 99999;
+ 	}
+
     // if the current move results in a terminal configuration or max search depth has been reached
     // call utility functin to get a value and 
 	if ((checkForTerminal(mouse_loc, cat_loc, cheese_loc, cats, cheeses)) || (depth == maxDepth)) {
@@ -219,52 +224,100 @@ double MiniMax(double gr[graph_size][4], int path[1][2], double minmax_cost[size
 		// if MAX node, find max utility
 		if (agentId == 0) {
 
-			best_utility = -99999;
-			for (int c=0; c < child_count; c++) {
-				my_mouse_location[0][0] = child_list[c][0];
-		    	my_mouse_location[0][1] = child_list[c][1];
-	    // 		printf("when makeing the call for agent %d at depth %d:\nmouse location (%d, %d)\ncat location (%d, %d)\n",
-					// next_agendID, next_depth, my_mouse_location[0][0], my_mouse_location[0][1],
-					// my_cat_location[0][0], my_cat_location[0][1]);
-				util = MiniMax(gr, &my_path[c], minmax_cost, my_cat_location, cats, cheese_loc, cheeses, 
-					my_mouse_location, mode, utility, next_agendID, next_depth, maxDepth, alpha, beta);
+			if (mode == 1) {
+				for (int c=0; c < child_count; c++) {
+					my_mouse_location[0][0] = child_list[c][0];
+			    	my_mouse_location[0][1] = child_list[c][1];
 
-				// fprintf(stderr, "get utility %d at depth %d for agent %d\n", util, depth, agentId);
-				if (util >= best_utility) {
-					best_utility = util;
-					best_c_index = c;
+					util = MiniMax(gr, &my_path[c], minmax_cost, my_cat_location, cats, cheese_loc, cheeses, 
+						my_mouse_location, mode, utility, next_agendID, next_depth, maxDepth, alpha, beta);
+
+					if (util > alpha){
+						alpha = util;
+						best_c_index = c;
+					}
+					if (beta <= alpha) {
+						break;
+					}
+
 				}
-			}
+				best_utility = alpha;
 
-			// update the next move for the mouse
-			if (depth == 0) {
-				path[0][0] = child_list[best_c_index][0];
-				path[0][1] = child_list[best_c_index][1];
+
+			} else {
+				best_utility = -99999;
+				for (int c=0; c < child_count; c++) {
+					my_mouse_location[0][0] = child_list[c][0];
+			    	my_mouse_location[0][1] = child_list[c][1];
+
+					util = MiniMax(gr, &my_path[c], minmax_cost, my_cat_location, cats, cheese_loc, cheeses, 
+						my_mouse_location, mode, utility, next_agendID, next_depth, maxDepth, alpha, beta);
+
+					if (util >= best_utility) {
+						best_utility = util;
+						best_c_index = c;
+					}
+				}
+
+				// update the next move for the mouse
+				if (depth == 0) {
+					path[0][0] = child_list[best_c_index][0];
+					path[0][1] = child_list[best_c_index][1];
+				}
+				// update the minmax_cost array since the location is expanded for the mouse
+				minmax_cost[mouse_loc[0][0]][mouse_loc[0][1]] = best_utility;		
 			}
-			// update the minmax_cost array since the location is expanded for the mouse
-			minmax_cost[mouse_loc[0][0]][mouse_loc[0][1]] = best_utility;			
 
 		// else at MIN node, find min utility
 		} else {
 
-			// find the min child utility
-			best_utility = 99999;
-			for (int c=0; c < child_count; c++) {
-		    	// cur_cat = (agentId-1) % cats;
-		    	my_cat_location[cur_cat][0] = child_list[c][0];
-		    	my_cat_location[cur_cat][1] = child_list[c][1];
+			if (mode == 1) {
+				for (int c=0; c < child_count; c++) {
+			    	// cur_cat = (agentId-1) % cats;
+			    	my_cat_location[cur_cat][0] = child_list[c][0];
+			    	my_cat_location[cur_cat][1] = child_list[c][1];
 
-				util = MiniMax(gr, &my_path[c], minmax_cost, my_cat_location, cats, cheese_loc, cheeses, 
-					my_mouse_location, mode, utility, next_agendID, next_depth, maxDepth, alpha, beta);
+					util = MiniMax(gr, &my_path[c], minmax_cost, my_cat_location, cats, cheese_loc, cheeses, 
+						my_mouse_location, mode, utility, next_agendID, next_depth, maxDepth, alpha, beta);
 
-				if (util <= best_utility) {
-					best_utility = util;
-					best_c_index = c;
+					if (util < beta){
+						beta = util;
+						best_c_index = c;
+					}
+					if (beta <= alpha){
+						break;
+					}
 				}
-			}  
+				best_utility = beta;
+
+			} else {
+				// find the min child utility
+				best_utility = 99999;
+				for (int c=0; c < child_count; c++) {
+			    	// cur_cat = (agentId-1) % cats;
+			    	my_cat_location[cur_cat][0] = child_list[c][0];
+			    	my_cat_location[cur_cat][1] = child_list[c][1];
+
+					util = MiniMax(gr, &my_path[c], minmax_cost, my_cat_location, cats, cheese_loc, cheeses, 
+						my_mouse_location, mode, utility, next_agendID, next_depth, maxDepth, alpha, beta);
+
+					if (util <= best_utility) {
+						best_utility = util;
+						best_c_index = c;
+					}
+				}  
+			}
 		}
-		
 	}
+
+
+	// update the next move for the mouse
+	if (depth == 0) {
+		path[0][0] = child_list[best_c_index][0];
+		path[0][1] = child_list[best_c_index][1];
+	}
+	// update the minmax_cost array since the location is expanded for the mouse
+	minmax_cost[mouse_loc[0][0]][mouse_loc[0][1]] = best_utility;	
 
 	return best_utility;
 }
