@@ -81,13 +81,16 @@ but explain carefully when needed.
      smartness=1 - which are harder for your mouse to beat?
      why do you think that is?
 
-     smartness=1 is harder to beat. Actually, I didn't find my mouse beating any smartness-1 cat yet...
-     I guess the cat used a different approach rather than the one we assumed it to move in the minimax search?
+     With my utility function I didn't see too much difference, but when smartness=1 the cat chases the mouse VERY VERY closely (within 2 cells) than when smartness=0.8, and that kind of PUSH my mouse to move towards cheeses more quickly and sometimes wins more easily.
+     Therefore I think smartness=0.8 is sometimes harder to beat than when smartness=1, but it really depends on the utility function.
+
 
 5 .- (2 marks) Can the mouse be made unbeatable by having an
      optimal utility function?
 
-      No I don't think so. If the search depth is too small, an optimal utility function can hardly help.
+      No I don't think so. 
+      If the search depth is too small, an optimal utility function can hardly help,
+      and it's very easy to get into loops.
 
 
 6 .- (2 bonus marks) Could a human playing the game in place
@@ -107,13 +110,13 @@ doesn't work, or what problems exist.
 	
 	Complete/Working	Partial		Not done
 
-Utility     X
+Utility     X (try ./MiniMax_search 2323 1 6 1 10 0.9 and ./MiniMax_search 243 1 6 0 10 0.8 XD)
  function
 
 MiniMax     X
 
 Alpha/Beta   
- pruning
+ pruning    X
 _____________________________________________________
 
 Marking:

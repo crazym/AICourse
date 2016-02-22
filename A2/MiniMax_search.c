@@ -239,10 +239,8 @@ double MiniMax(double gr[graph_size][4], int path[1][2], double minmax_cost[size
 					if (beta <= alpha) {
 						break;
 					}
-
 				}
 				best_utility = alpha;
-
 
 			} else {
 				best_utility = -99999;
