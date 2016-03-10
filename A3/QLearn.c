@@ -281,8 +281,53 @@ int feat_QLearn_action(double gr[max_graph_size][4],double weights[25], int mous
    * TO DO: Complete this function
    ***********************************************************************************************/        
 
-  return(0);		// <--- replace this while you're at it!
+  int cur_index;
+  int next_move_count=0;
+  int possible_moves[4];
+  int next_x, next_y, next_state;
+  int next_mouse_pos[0][2];
+  double features[25];
+  double max_Q, new_Q;
+  int ideal_a;
 
+
+  cur_index = get_index(mouse_pos, size_X);
+  for (int c=0; c<4; c++){
+    if (gr[cur_index][c]==1) {
+      possible_moves[next_move_count] = c;
+      next_move_count++;
+    }
+  }
+
+  // x y adjustments for neighbours in clockwise order
+  int nghb_x_trbl[4] = {0, 1, 0, -1};
+  int nghb_y_trbl[4] = {-1, 0, 1, 0};
+
+  double rdm;
+  rdm = rand_percent();
+  if (rdm < pct){
+    max_Q = -99999;
+    for (int c=0; c<next_move_count; c++){
+      // evaluate features values on current state
+      next_x = mouse_pos[0][0] + nghb_x_trbl[possible_moves[c]];
+      next_y = mouse_pos[0][1] + nghb_y_trbl[possible_moves[c]];
+      next_mouse_pos[0][0] = next_x;
+      next_mouse_pos[0][1] = next_y;
+      evaluateFeatures(gr, features, next_mouse_pos, cats, cheeses, size_X, graph_size);
+      new_Q = Qsa(weights, features);
+      if (new_Q > max_Q) {
+        max_Q = new_Q;
+        ideal_a = possible_moves[c];
+      }
+    }  
+
+  // rest of the time choose randomly from available move  
+  } else {
+    // fprintf(stderr, "moving randomly\n");
+    ideal_a = possible_moves[rand()%next_move_count];
+
+  }
+  return ideal_a;
 }
 
 void evaluateFeatures(double gr[max_graph_size][4],double features[25], int mouse_pos[1][2], int cats[5][2], int cheeses[5][2], int size_X, int graph_size)
