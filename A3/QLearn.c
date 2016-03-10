@@ -51,87 +51,139 @@ void QLearn_update(int s, int a, double r, int s_new, double *QTable)
    * TO DO: Complete this function
    ***********************************************************************************************/
 
+  double prev_Q, new_Q, max_new_Q;
+  
+  prev_Q = *(QTable+(4*s)+a)
+  printf("previous Q entry is %f\n", prev_Q);
+  
+  max_new_Q = -99999;
+  for (int i=0; i<4; i++){ // TODO: check if upperbound should be 4 or not
+      new_Q = *(QTable+(4*s_new)+i);
+      if (new_Q > max_new_Q) {
+        max_new_Q = new_Q;
+      }
+  }
+
+  *(QTable+(4*s)+a) = alpha * (r + lambda * max_new_Q) - prev_Q;
   
 }
 
 int QLearn_action(double gr[max_graph_size][4], int mouse_pos[1][2], int cats[5][2], int cheeses[5][2], double pct, double *QTable, int size_X, int graph_size)
 {
   /*
-     This function decides the action the mouse will take. It receives as inputs
-     - The graph - so you can check for walls! The mouse must never move through walls
-     - The mouse position
-     - The cat position
-     - The chees position
-     - A 'pct' value in [0,1] indicating the amount of time the mouse uses the QTable to decide its action,
+      This function decides the action the mouse will take. It receives as inputs
+      - The graph - so you can check for walls! The mouse must never move through walls
+      - The mouse position
+      - The cat position
+      - The chees position
+      - A 'pct' value in [0,1] indicating the amount of time the mouse uses the QTable to decide its action,
        for example, if pct=.25, then 25% of the time the mouse uses the QTable to choose its action,
        the remaining 75% of the time it chooses randomly among the available actions.
        
-     Remember that the training process involves random exploration initially, but as training
-     proceeds we use the QTable more and more, in order to improve our QTable values around promising
-     actions.
-     
-     The value of pct is controlled by QLearn_core_GL, and increases with each round of training.
-     
-     This function *must return* an action index in [0,3] where
+      Remember that the training process involves random exploration initially, but as training
+      proceeds we use the QTable more and more, in order to improve our QTable values around promising
+      actions.
+
+      The value of pct is controlled by QLearn_core_GL, and increases with each round of training.
+
+      This function *must return* an action index in [0,3] where
         0 - move up
         1 - move right
         2 - move down
         3 - move left
         
-     QLearn_core_GL will print a warning if your action makes the mouse cross a wall, or if it makes
-     the mouse leave the map - this should not happen. If you see a warning, fix the code in this
-     function!
-     
-   The Q-table has been pre-allocated and initialized to 0. The Q-table has
-   a size of
-   
-        graph_size^3 x 4
-        
-   This is because the table requires one entry for each possible state, and
-   the state is comprised of the position of the mouse, cat, and cheese. 
-   Since each of these agents can be in one of graph_size positions, all
-   possible combinations yield graph_size^3 states.
-   
-   Now, for each state, the mouse has up to 4 possible moves (up, right,
-   down, and left). We ignore here the fact that some moves are not possible
-   from some states (due to walls) - it is up to the QLearn_action() function
-   to make sure the mouse never crosses a wall. 
-   
-   So all in all, you have a big table.
-        
-   For example, on an 8x8 maze, the Q-table will have a size of
-   
-       64^3 x 4  entries
+      QLearn_core_GL will print a warning if your action makes the mouse cross a wall, or if it makes
+      the mouse leave the map - this should not happen. If you see a warning, fix the code in this
+      function!
        
-       with 
-       
-       size_X = 8		<--- size of one side of the maze
-       graph_size = 64		<--- Total number of nodes in the graph
-       
-   Indexing within the Q-table works as follows:
-   
-     say the mouse is at   i,j
-         the cat is at     k,l
-         the cheese is at  m,n
+      The Q-table has been pre-allocated and initialized to 0. The Q-table has
+      a size of
+
+          graph_size^3 x 4
+          
+      This is because the table requires one entry for each possible state, and
+      the state is comprised of the position of the mouse, cat, and cheese. 
+      Since each of these agents can be in one of graph_size positions, all
+      possible combinations yield graph_size^3 states.
+
+      Now, for each state, the mouse has up to 4 possible moves (up, right,
+      down, and left). We ignore here the fact that some moves are not possible
+      from some states (due to walls) - it is up to the QLearn_action() function
+      to make sure the mouse never crosses a wall. 
+
+      So all in all, you have a big table.
+          
+      For example, on an 8x8 maze, the Q-table will have a size of
+
+         64^3 x 4  entries
          
-     state = (i+(j*size_X)) * ((k+(l*size_X))*graph_size) + ((m+(n*size_X))*graph_size*graph_size)
-     ** Make sure you undestand the state encoding above!
-     
-     Entries in the Q-table for this state are
+         with 
+         
+         size_X = 8		<--- size of one side of the maze
+         graph_size = 64		<--- Total number of nodes in the graph
+         
+      Indexing within the Q-table works as follows:
 
-     *(QTable+(4*state)+a)      <-- here a is the action in [0,3]
-     
-     (yes, it's a linear array, no shorcuts with brackets!)
-     
-     NOTE: There is only one cat and once cheese, so you only need to use cats[0][:] and cheeses[0][:]
-   */
-  
-  /***********************************************************************************************
-   * TO DO: Complete this function
-   ***********************************************************************************************/  
+       say the mouse is at   i,j
+           the cat is at     k,l
+           the cheese is at  m,n
+           
+       state = (i+(j*size_X)) * ((k+(l*size_X))*graph_size) + ((m+(n*size_X))*graph_size*graph_size)
+       ** Make sure you undestand the state encoding above!
+       
+       Entries in the Q-table for this state are
 
-  return(0);		// <--- of course, you will change this!
-  
+       *(QTable+(4*state)+a)      <-- here a is the action in [0,3]
+       
+       (yes, it's a linear array, no shorcuts with brackets!)
+       
+       NOTE: There is only one cat and once cheese, so you only need to use cats[0][:] and cheeses[0][:]
+      */
+    
+    /***********************************************************************************************
+     * TO DO: Complete this function
+     ***********************************************************************************************/   
+  int i, j, k, l, m, n, cur_index, cur_state;
+  int next_move_count=0;
+  int possible_moves[4];
+  int max_Q;
+  int ideal_a;
+
+  // get the current state index in the Qtable
+  i = mouse_pos[0][0];
+  j = mouse_pos[0][1];
+  k = cat_pos[0][0];
+  l = cat_pos[0][1];
+  m = cheese_pos[0][0];
+  n = cheese_pos[0][1];
+  state = (i+(j*size_X)) + 
+          ((k+(l*size_X))*graph_size) + 
+          ((m+(n*size_X))*graph_size*graph_size);
+
+  // found possible moves for mouse (i.e not a wall)
+  cur_index = i + (j*size_X);
+  for (int c=0; c<4; c++){
+    if (gr[cur_index][c]) {
+      possible_moves[next_move_count] = c;
+      next_move_count++;
+    }
+  }
+
+  // for pct amount of time find the optimal move by QTable
+  if (rand_percent() < pct){
+    max_Q = -99999;
+    for (int c=0; c<next_move_count; c++){ // TODO: check if upperbound should be 4 or not
+      new_Q = *(QTable+(4*cur_state)+possible_moves[c]);
+      if (new_Q > max_Q) {
+        ideal_a = c;
+      }
+    }  
+  // rest of the time choose randomly from available move  
+  } else {
+    ideal_a = possible_moves[rand()%next_move_count];
+
+  }
+  return ideal_a;
 }
 
 double QLearn_reward(double gr[max_graph_size][4], int mouse_pos[1][2], int cats[5][2], int cheeses[5][2], int size_X, int graph_size)
@@ -153,8 +205,23 @@ double QLearn_reward(double gr[max_graph_size][4], int mouse_pos[1][2], int cats
    /***********************************************************************************************
    * TO DO: Complete this function
    ***********************************************************************************************/ 
+   int mouse_cat_dist, mouse_cheese_dist;
+   int reward;
 
-  return(0);		// <--- of course, you will change this as well!     
+   mouse_cat_dist = manhattan_dist(mouse_pos[0][0], mouse_pos[0][1], cats[0][0], cats[0][1]);
+   mouse_cheese_dist = manhattan_dist(mouse_pos[0][0], mouse_pos[0][1], cheeses[0][0], cheeses[0][1]);
+
+   reward = mouse_cat_dist - mouse_cheese_dist;
+
+   if (mouse_pos[0][0] == cats[0][0] && mouse_pos[0][1] == cats[0][1]){
+      reward = reward - 10000;  
+   }
+
+   if (mouse_pos[0][0] == cheeses[0][0] && mouse_pos[0][1] == cheeses[0][1]){
+      reward = reward + 10000;  
+   }   
+
+   return reward;
 }
 
 void feat_QLearn_update(double gr[max_graph_size][4],double weights[25], double reward, int mouse_pos[1][2], int cats[5][2], int cheeses[5][2], int size_X, int graph_size)
@@ -260,3 +327,26 @@ void maxQsa(double gr[max_graph_size][4],double weights[25],int mouse_pos[1][2],
  *  Add any functions needed to compute your features below 
  *                 ---->  THIS BOX <-----
  * *************************************************************************************************/
+double rand_percent(){
+    return (double)rand() / (double)RAND_MAX ;
+}
+
+int manhattan_dist(int x1, int y1, int x2, int y2){
+  return abs(x1 - x2) + abs(y1 - y2);
+}
+
+// int check_cats(int x, int y, int cat_loc[10][2], int cats){
+//   for (int i = 0; i<cats; i++) {
+//     if (x == cat_loc[i][0] && y == cat_loc[i][1])
+//       return 1;
+//   }
+//   return 0;
+// }
+
+// int check_cheese(int x, int y, int cheese_loc[10][2], int cheeses){
+//   for (int i = 0; i<cheeses; i++) {
+//     if (x == cheese_loc[i][0] && y == cheese_loc[i][1])
+//       return 1;
+//   }
+//   return 0;
+// }
