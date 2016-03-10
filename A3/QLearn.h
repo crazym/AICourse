@@ -47,6 +47,8 @@ void expensiveFeature1(double gr[max_graph_size][4], int path[max_graph_size][2]
 int checkForGoal(int x, int y, int pos[5][2]);
 
 // If you need to add any function prototypes yourself, you can do so *below* this line.
+int get_state(int mouse_pos[1][2], int cats[5][2], int cheeses[5][2], int size_X, int graph_size);
+int get_index(int mouse_pos[1][2], int size_X);
 double rand_percent();
 int manhattan_dist(int x1, int y1, int x2, int y2);
 // int check_cats(int x, int y, int cat_loc[10][2], int cats);

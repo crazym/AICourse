@@ -144,25 +144,21 @@ int QLearn_action(double gr[max_graph_size][4], int mouse_pos[1][2], int cats[5]
     /***********************************************************************************************
      * TO DO: Complete this function
      ***********************************************************************************************/   
-  int i, j, k, l, m, n, cur_index, cur_state;
+  // int i, j, k, l, m, n, cur_index, cur_state;
+  int cur_index, cur_state;
   int next_move_count=0;
   int possible_moves[4];
   double max_Q, new_Q;
   int ideal_a;
 
+  // i = mouse_pos[0][0];
+  // j = mouse_pos[0][1];
   // get the current state index in the Qtable
-  i = mouse_pos[0][0];
-  j = mouse_pos[0][1];
-  k = cats[0][0];
-  l = cats[0][1];
-  m = cheeses[0][0];
-  n = cheeses[0][1];
-  cur_state = (i+(j*size_X)) + 
-          ((k+(l*size_X))*graph_size) + 
-          ((m+(n*size_X))*graph_size*graph_size);
+  cur_state = get_state(mouse_pos, cats, cheeses, size_X, graph_size);
 
   // found possible moves for mouse (i.e not a wall)
-  cur_index = i + (j*size_X);
+  // cur_index = i + (j*size_X);
+  cur_index = get_index(mouse_pos, size_X);
   for (int c=0; c<4; c++){
     if (gr[cur_index][c]==1) {
       possible_moves[next_move_count] = c;
@@ -215,24 +211,36 @@ double QLearn_reward(double gr[max_graph_size][4], int mouse_pos[1][2], int cats
    /***********************************************************************************************
    * TO DO: Complete this function
    ***********************************************************************************************/ 
-   int mouse_cat_dist, mouse_cheese_dist;
-   double reward;
+    int mouse_cat_dist, mouse_cheese_dist;
+    int cur_index, ngbr_count;
+    double reward;
 
-   mouse_cat_dist = manhattan_dist(mouse_pos[0][0], mouse_pos[0][1], cats[0][0], cats[0][1]);
-   mouse_cheese_dist = manhattan_dist(mouse_pos[0][0], mouse_pos[0][1], cheeses[0][0], cheeses[0][1]);
+    mouse_cat_dist = manhattan_dist(mouse_pos[0][0], mouse_pos[0][1], cats[0][0], cats[0][1]);
+    mouse_cheese_dist = manhattan_dist(mouse_pos[0][0], mouse_pos[0][1], cheeses[0][0], cheeses[0][1]);
 
-   reward = mouse_cat_dist - mouse_cheese_dist;
+    reward = mouse_cat_dist - mouse_cheese_dist;
 
-   if (mouse_pos[0][0] == cats[0][0] && mouse_pos[0][1] == cats[0][1]){
-      reward = reward - 10000;  
-   }
+    if (mouse_pos[0][0] == cats[0][0] && mouse_pos[0][1] == cats[0][1]){
+      reward = reward - 100;  
+    }
 
-   if (mouse_pos[0][0] == cheeses[0][0] && mouse_pos[0][1] == cheeses[0][1]){
-      reward = reward + 10000;  
-   }
+    if (mouse_pos[0][0] == cheeses[0][0] && mouse_pos[0][1] == cheeses[0][1]){
+      reward = reward + 100;  
+    }
+
+    // punish slightly if at deadend (choose it when cheese is at the deadend)
+    cur_index = get_index(mouse_pos, size_X);
+    for (int i=0; i<4; i++) {
+      if (gr[cur_index][i]) {
+        ngbr_count++;
+      }
+    }
+    if (ngbr_count == 1) {
+      reward = reward - 50;
+    }
    // fprintf(stderr, "reward at (%d, %d) is %f\n", mouse_pos[0][0], mouse_pos[0][1], reward);
 
-   return reward;
+    return reward;
 }
 
 void feat_QLearn_update(double gr[max_graph_size][4],double weights[25], double reward, int mouse_pos[1][2], int cats[5][2], int cheeses[5][2], int size_X, int graph_size)
@@ -310,8 +318,16 @@ double Qsa(double weights[25], double features[25])
   * TO DO: Complete this function
   ***********************************************************************************************/  
   
-  return(0);		// <--- stub! compute and return the Qsa value
+  // return(0);		// <--- stub! compute and return the Qsa value
+  double cur_Q=0.0;
 
+  int i=0;
+  while (features[i] != -1) {
+     cur_Q = cur_Q + weights[i]*features[i];
+     i++;
+  }
+
+  return cur_Q;
 }
 
 void maxQsa(double gr[max_graph_size][4],double weights[25],int mouse_pos[1][2], int cats[5][2], int cheeses[5][2], int size_X, int graph_size, double *maxU, int *maxA)
@@ -329,16 +345,76 @@ void maxQsa(double gr[max_graph_size][4],double weights[25],int mouse_pos[1][2],
    * TO DO: Complete this function
    ***********************************************************************************************/  
  
-  *maxU=0;	// <--- stubs! your code will compute actual values for these two variables!
-  *maxA=0;
-  return;
-   
+  int cur_state, cur_index; 
+  int next_x, next_y, next_state;
+  int next_mouse_pos[0][2];
+  int possible_moves[4];
+  int next_move_count;
+  double max_Q, next_Q;
+  int max_a=0;
+
+  double features[25];
+
+  cur_state = get_state(mouse_pos, cats, cheeses, size_X, graph_size);
+  cur_index = get_index(mouse_pos, size_X);
+
+  for (int c=0; c<4; c++){
+    if (gr[cur_index][c]==1) {
+      possible_moves[next_move_count] = c;
+      next_move_count++;
+    }
+  }
+
+  int nghb_x_trbl[4] = {0, 1, 0, -1};
+  int nghb_y_trbl[4] = {-1, 0, 1, 0};
+
+  max_Q = -99999;
+  for (int c=0; c<next_move_count; c++){
+    next_x = mouse_pos[0][0] + nghb_x_trbl[possible_moves[c]];
+    next_y = mouse_pos[0][1] + nghb_y_trbl[possible_moves[c]];
+    next_mouse_pos[0][0] = next_x;
+    next_mouse_pos[0][1] = next_y;
+
+    // get the evaluated features for the neighbour state
+    evaluateFeatures(gr, features, next_mouse_pos, cats, cheeses, size_X, graph_size);
+    
+    // get the actual Q value given the state and obtained features
+    next_Q = Qsa(weights, features);
+    if (next_Q > max_Q) {
+      max_Q = next_Q;
+      max_a = possible_moves[c];
+    }
+  }
+
+  *maxU = max_Q;
+  *maxA = max_a;
 }
 
 /***************************************************************************************************
  *  Add any functions needed to compute your features below 
  *                 ---->  THIS BOX <-----
  * *************************************************************************************************/
+int get_state(int mouse_pos[1][2], int cats[5][2], int cheeses[5][2], int size_X, int graph_size) {
+  int i, j, k, l, m, n;
+  
+  i = mouse_pos[0][0];
+  j = mouse_pos[0][1];
+  k = cats[0][0];
+  l = cats[0][1];
+  m = cheeses[0][0];
+  n = cheeses[0][1];
+  return (i+(j*size_X)) + 
+          ((k+(l*size_X))*graph_size) + 
+          ((m+(n*size_X))*graph_size*graph_size);
+
+}
+
+int get_index(int mouse_pos[1][2], int size_X){
+
+  return mouse_pos[0][0] + (mouse_pos[0][1]*size_X);
+}
+
+
 double rand_percent(){
     return (double)rand() / (double)RAND_MAX ;
 }
