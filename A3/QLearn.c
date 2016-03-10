@@ -53,8 +53,8 @@ void QLearn_update(int s, int a, double r, int s_new, double *QTable)
 
   double prev_Q, new_Q, max_new_Q;
   
-  prev_Q = *(QTable+(4*s)+a)
-  printf("previous Q entry is %f\n", prev_Q);
+  prev_Q = *(QTable+(4*s)+a);
+  // printf("previous Q entry is %f\n", prev_Q);
   
   max_new_Q = -99999;
   for (int i=0; i<4; i++){ // TODO: check if upperbound should be 4 or not
@@ -63,8 +63,9 @@ void QLearn_update(int s, int a, double r, int s_new, double *QTable)
         max_new_Q = new_Q;
       }
   }
+  // fprintf(stderr, "max_new_Q is %f\n", max_new_Q);
 
-  *(QTable+(4*s)+a) = alpha * (r + lambda * max_new_Q) - prev_Q;
+  *(QTable+(4*s)+a) = prev_Q + alpha * ((r + lambda * max_new_Q) - prev_Q);
   
 }
 
@@ -146,40 +147,49 @@ int QLearn_action(double gr[max_graph_size][4], int mouse_pos[1][2], int cats[5]
   int i, j, k, l, m, n, cur_index, cur_state;
   int next_move_count=0;
   int possible_moves[4];
-  int max_Q;
+  double max_Q, new_Q;
   int ideal_a;
 
   // get the current state index in the Qtable
   i = mouse_pos[0][0];
   j = mouse_pos[0][1];
-  k = cat_pos[0][0];
-  l = cat_pos[0][1];
-  m = cheese_pos[0][0];
-  n = cheese_pos[0][1];
-  state = (i+(j*size_X)) + 
+  k = cats[0][0];
+  l = cats[0][1];
+  m = cheeses[0][0];
+  n = cheeses[0][1];
+  cur_state = (i+(j*size_X)) + 
           ((k+(l*size_X))*graph_size) + 
           ((m+(n*size_X))*graph_size*graph_size);
 
   // found possible moves for mouse (i.e not a wall)
   cur_index = i + (j*size_X);
   for (int c=0; c<4; c++){
-    if (gr[cur_index][c]) {
+    if (gr[cur_index][c]==1) {
       possible_moves[next_move_count] = c;
       next_move_count++;
     }
   }
+  // fprintf(stderr, "next move count is %d at (%d, %d)\n", next_move_count, mouse_pos[0][0], mouse_pos[0][1]);
 
+  double rdm;
+  rdm = rand_percent();
+  // fprintf(stderr, "ramdom %f vs pct % \n", rdm, pct);
   // for pct amount of time find the optimal move by QTable
-  if (rand_percent() < pct){
+  if (rdm < pct){
     max_Q = -99999;
     for (int c=0; c<next_move_count; c++){ // TODO: check if upperbound should be 4 or not
       new_Q = *(QTable+(4*cur_state)+possible_moves[c]);
       if (new_Q > max_Q) {
-        ideal_a = c;
+        max_Q = new_Q;
+        ideal_a = possible_moves[c];
       }
     }  
+    // fprintf(stderr, "ideal_a at (%d, %d) is %d with Q=%f\n", mouse_pos[0][0],mouse_pos[0][1], ideal_a, max_Q);
+    // fprintf(stderr, "is it a wall? %f\n", gr[cur_index][ideal_a]);
+
   // rest of the time choose randomly from available move  
   } else {
+    // fprintf(stderr, "moving randomly\n");
     ideal_a = possible_moves[rand()%next_move_count];
 
   }
@@ -206,7 +216,7 @@ double QLearn_reward(double gr[max_graph_size][4], int mouse_pos[1][2], int cats
    * TO DO: Complete this function
    ***********************************************************************************************/ 
    int mouse_cat_dist, mouse_cheese_dist;
-   int reward;
+   double reward;
 
    mouse_cat_dist = manhattan_dist(mouse_pos[0][0], mouse_pos[0][1], cats[0][0], cats[0][1]);
    mouse_cheese_dist = manhattan_dist(mouse_pos[0][0], mouse_pos[0][1], cheeses[0][0], cheeses[0][1]);
@@ -219,7 +229,8 @@ double QLearn_reward(double gr[max_graph_size][4], int mouse_pos[1][2], int cats
 
    if (mouse_pos[0][0] == cheeses[0][0] && mouse_pos[0][1] == cheeses[0][1]){
       reward = reward + 10000;  
-   }   
+   }
+   // fprintf(stderr, "reward at (%d, %d) is %f\n", mouse_pos[0][0], mouse_pos[0][1], reward);
 
    return reward;
 }
@@ -300,6 +311,7 @@ double Qsa(double weights[25], double features[25])
   ***********************************************************************************************/  
   
   return(0);		// <--- stub! compute and return the Qsa value
+
 }
 
 void maxQsa(double gr[max_graph_size][4],double weights[25],int mouse_pos[1][2], int cats[5][2], int cheeses[5][2], int size_X, int graph_size, double *maxU, int *maxA)
