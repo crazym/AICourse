@@ -51,8 +51,6 @@ int get_state(int mouse_pos[1][2], int cats[5][2], int cheeses[5][2], int size_X
 int get_index(int mouse_pos[1][2], int size_X);
 double rand_percent();
 int manhattan_dist(int x1, int y1, int x2, int y2);
-// int check_cats(int x, int y, int cat_loc[10][2], int cats);
-// int check_cheese(int x, int y, int cheese_loc[10][2], int cheeses);
 
 #endif
 

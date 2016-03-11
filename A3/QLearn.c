@@ -266,15 +266,21 @@ void feat_QLearn_update(double gr[max_graph_size][4],double weights[25], double 
 
     evaluateFeatures(gr, features, mouse_pos, cats, cheeses, size_X, graph_size);
     cur_Q = Qsa(weights, features);
+    // fprintf(stderr, "updating: cur_Q %f\n", cur_Q);
 
     // get max_{s'}(Q(s')) assigned to max_new_Q
     maxQsa(gr, weights, mouse_pos, cats, cheeses, size_X, graph_size, &max_new_Q, &ideal_a);
+    // fprintf(stderr, "updating: got max_Q %f\n", max_new_Q);
 
-    int i=0;
-    while (weights[i] != -1) {
+    
+    for (int i=0; i< numFeatures; i++) {
       prev_weight = weights[i];
       weights[i] = prev_weight + alpha * ( (reward + lambda*max_new_Q) - cur_Q) * features[i];
+      // fprintf(stderr, "updating w %i from %f to %f\n", i, prev_weight, weights[i]);
     }
+
+    // fprintf(stderr, "updating end...\n");
+    return;
 }
 
 int feat_QLearn_action(double gr[max_graph_size][4],double weights[25], int mouse_pos[1][2], int cats[5][2], int cheeses[5][2], double pct, int size_X, int graph_size)
@@ -296,6 +302,7 @@ int feat_QLearn_action(double gr[max_graph_size][4],double weights[25], int mous
   /***********************************************************************************************
    * TO DO: Complete this function
    ***********************************************************************************************/        
+  // fprintf(stderr, "#########taking actions...\n");
   int cur_index, cur_state;
   int next_move_count=0;
   int possible_moves[4];
@@ -312,12 +319,16 @@ int feat_QLearn_action(double gr[max_graph_size][4],double weights[25], int mous
 
   double rdm;
   rdm = rand_percent();
+    // fprintf(stderr, "ramdom %f vs pct %f \n", rdm, pct);
   if (rdm < pct){
     // choose max_Q
     maxQsa(gr, weights, mouse_pos, cats, cheeses, size_X, graph_size, &max_Q, &ideal_a);
+    // fprintf(stderr, "taking action: got max_Q %f\n", max_Q);
+
   } else{
     // choose randomly
     ideal_a = possible_moves[rand()%next_move_count];
+    // fprintf(stderr, "moving randomly to %d\n", ideal_a);
   }  
 
   return ideal_a;
@@ -344,9 +355,50 @@ void evaluateFeatures(double gr[max_graph_size][4],double features[25], int mous
    * TO DO: Complete this function
    ***********************************************************************************************/      
    
-   // feature 0: distance to closest cheese
-   // feature 1: if there is a cat around
-   // feature 2: if mouse is in a 
+    // feature 0: distance to closest cheese
+    int closest_cheese_dist, mouse_cheese_dist;
+    int i=0;
+
+    closest_cheese_dist = 999;
+    // hmm, can only escape case where first cheese is not at (0, 0)
+    while (!(cheeses[i][0] == 0 && cheeses[i][1] == 0) || i == 0) {
+      // fprintf(stderr, "cheeses : (%d, %d) \n", cheeses[i][0], cheeses[i][1]);
+      mouse_cheese_dist = manhattan_dist(mouse_pos[0][0], mouse_pos[0][1], cheeses[i][0], cheeses[i][1]);
+      if (mouse_cheese_dist < closest_cheese_dist) {
+        closest_cheese_dist = mouse_cheese_dist;
+      }
+      i++;
+    }
+    // in favour of smaller cheese dist
+    features[0] = (size_X*2 - closest_cheese_dist) / (float)(size_X*2);
+
+    // feature 1: if there are cats around in 2 manhantton distances
+    int closest_cat_dist, mouse_cat_dist;
+    
+    i=0;
+    closest_cat_dist = 999;
+    while (!(cats[i][0] == 0 && cats[i][1] == 0) || i==0) {
+      mouse_cat_dist = manhattan_dist(mouse_pos[0][0], mouse_pos[0][1], cats[i][0], cats[i][1]);
+      // fprintf(stderr, "cats : (%d, %d) with dist %d when mouse at  (%d, %d)\n", cats[i][0], cats[i][1], mouse_cat_dist, mouse_pos[0][0], mouse_pos[0][1]);
+      if (mouse_cat_dist < closest_cat_dist) {
+        closest_cat_dist = mouse_cat_dist;
+      }
+      i++;
+    }
+    features[1] = closest_cat_dist / (float)(size_X*2);
+
+    // feature 2: if mouse is in a deadend
+    int cur_index, ngbr_count;
+    cur_index = get_index(mouse_pos, size_X);
+    for (int c=0; c<4; c++) {
+      if (gr[cur_index][c]) {
+        ngbr_count++;
+      }
+    }
+    
+    features[2] = (ngbr_count - 1) *3;
+
+    // fprintf(stderr, "frature 0, 1 and 2 is %f, %f, %f\n", features[0], features[1], features[2]);
 }
 
 double Qsa(double weights[25], double features[25])
@@ -362,12 +414,13 @@ double Qsa(double weights[25], double features[25])
   // return(0);		// <--- stub! compute and return the Qsa value
   double cur_Q=0.0;
 
-  int i=0;
-  while (features[i] != -1) {
-     cur_Q = cur_Q + weights[i]*features[i];
-     i++;
+  
+  for (int i=0; i< numFeatures; i++){
+    // fprintf(stderr, "for %d weight= %f and feature = %f\n", i, weights[i], features[i]);
+    cur_Q += weights[i]*features[i];
   }
 
+  // fprintf(stderr, "evaluated Q is %f\n", cur_Q);
   return cur_Q;
 }
 
@@ -390,14 +443,14 @@ void maxQsa(double gr[max_graph_size][4],double weights[25],int mouse_pos[1][2],
   int next_x, next_y, next_state;
   int next_mouse_pos[0][2];
   int possible_moves[4];
-  int next_move_count;
+  int next_move_count=0;
   double max_Q, next_Q;
   int max_a=0;
 
   double features[25];
 
-  cur_state = get_state(mouse_pos, cats, cheeses, size_X, graph_size);
   cur_index = get_index(mouse_pos, size_X);
+  // fprintf(stderr, "in maxQsa\n");
 
   for (int c=0; c<4; c++){
     if (gr[cur_index][c]==1) {
@@ -409,6 +462,7 @@ void maxQsa(double gr[max_graph_size][4],double weights[25],int mouse_pos[1][2],
   int nghb_x_trbl[4] = {0, 1, 0, -1};
   int nghb_y_trbl[4] = {-1, 0, 1, 0};
 
+  // fprintf(stderr, "mouse at (%d, %d) with %d nbgrs \n", mouse_pos[0][0], mouse_pos[0][1], next_move_count);
   max_Q = -99999;
   for (int c=0; c<next_move_count; c++){
     next_x = mouse_pos[0][0] + nghb_x_trbl[possible_moves[c]];
@@ -421,6 +475,7 @@ void maxQsa(double gr[max_graph_size][4],double weights[25],int mouse_pos[1][2],
     
     // get the actual Q value given the state and obtained features
     next_Q = Qsa(weights, features);
+    // fprintf(stderr, "getting Q %f\n", next_Q);
     if (next_Q > max_Q) {
       max_Q = next_Q;
       max_a = possible_moves[c];
@@ -429,6 +484,7 @@ void maxQsa(double gr[max_graph_size][4],double weights[25],int mouse_pos[1][2],
 
   *maxU = max_Q;
   *maxA = max_a;
+  return;
 }
 
 /***************************************************************************************************
@@ -454,27 +510,21 @@ int get_index(int mouse_pos[1][2], int size_X){
   return mouse_pos[0][0] + (mouse_pos[0][1]*size_X);
 }
 
-
 double rand_percent(){
-    return (double)rand() / (double)RAND_MAX ;
+    // return (double)rand() / (double)RAND_MAX ;
+  return drand48();
 }
 
 int manhattan_dist(int x1, int y1, int x2, int y2){
   return abs(x1 - x2) + abs(y1 - y2);
 }
 
-// int check_cats(int x, int y, int cat_loc[10][2], int cats){
-//   for (int i = 0; i<cats; i++) {
-//     if (x == cat_loc[i][0] && y == cat_loc[i][1])
-//       return 1;
-//   }
-//   return 0;
-// }
+void expensiveFeature1(double gr[max_graph_size][4], int path[max_graph_size][2],
+                        int start_x, int start_y, 
+                        int (*goalCheck)(int x, int y, int pos[5][2]), 
+                        int pos[5][2], int s_type, int *l, int size_X){
 
-// int check_cheese(int x, int y, int cheese_loc[10][2], int cheeses){
-//   for (int i = 0; i<cheeses; i++) {
-//     if (x == cheese_loc[i][0] && y == cheese_loc[i][1])
-//       return 1;
-//   }
-//   return 0;
-// }
+}
+int checkForGoal(int x, int y, int pos[5][2]){
+
+}
