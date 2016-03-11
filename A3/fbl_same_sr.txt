@@ -1,0 +1,440 @@
+zhangmao@iits-b473-20066:~/cscd84w16_space/CSCD84/A3$ ./QLearn 1522 1 1 2 0.9 3 50 1000000
+Creating maze of size 16 x 16
+  -Initializing a random, 4-connected graph.
+  -Prim's MST
+  -Inserting loops randomly
+  -Done!
+Maze size: 16x16
+Cat locations:
+8, 4
+Cheese locations:
+8, 13
+Mouse is at:
+4, 8
+Importing Sprites...
+Init framebuffer and maze buffer
+All done! let's play!
+Starting round 1 of 50
+At end of round 1, ate 2465 times, eaten 71579 times, success rate=0.033291
+Starting round 2 of 50
+At end of round 2, ate 2693 times, eaten 71406 times, success rate=0.036343
+Starting round 3 of 50
+At end of round 3, ate 2706 times, eaten 71092 times, success rate=0.036668
+Starting round 4 of 50
+At end of round 4, ate 2890 times, eaten 70927 times, success rate=0.039151
+Starting round 5 of 50
+At end of round 5, ate 3063 times, eaten 70851 times, success rate=0.041440
+Starting round 6 of 50
+At end of round 6, ate 3180 times, eaten 70517 times, success rate=0.043150
+Starting round 7 of 50
+At end of round 7, ate 3305 times, eaten 70354 times, success rate=0.044869
+Starting round 8 of 50
+At end of round 8, ate 3505 times, eaten 70131 times, success rate=0.047599
+Starting round 9 of 50
+At end of round 9, ate 3549 times, eaten 69823 times, success rate=0.048370
+Starting round 10 of 50
+At end of round 10, ate 3791 times, eaten 69368 times, success rate=0.051819
+Starting round 11 of 50
+At end of round 11, ate 4001 times, eaten 68963 times, success rate=0.054835
+Starting round 12 of 50
+At end of round 12, ate 4168 times, eaten 68596 times, success rate=0.057281
+Starting round 13 of 50
+At end of round 13, ate 4301 times, eaten 68166 times, success rate=0.059351
+Starting round 14 of 50
+At end of round 14, ate 4523 times, eaten 67780 times, success rate=0.062556
+Starting round 15 of 50
+At end of round 15, ate 4694 times, eaten 67124 times, success rate=0.065360
+Starting round 16 of 50
+At end of round 16, ate 4874 times, eaten 66590 times, success rate=0.068202
+Starting round 17 of 50
+At end of round 17, ate 5166 times, eaten 66088 times, success rate=0.072501
+Starting round 18 of 50
+At end of round 18, ate 5263 times, eaten 65714 times, success rate=0.074151
+Starting round 19 of 50
+At end of round 19, ate 5478 times, eaten 65077 times, success rate=0.077642
+Starting round 20 of 50
+At end of round 20, ate 5779 times, eaten 64327 times, success rate=0.082432
+Starting round 21 of 50
+At end of round 21, ate 5824 times, eaten 64052 times, success rate=0.083348
+Starting round 22 of 50
+At end of round 22, ate 6017 times, eaten 63248 times, success rate=0.086869
+Starting round 23 of 50
+At end of round 23, ate 6356 times, eaten 62653 times, success rate=0.092104
+Starting round 24 of 50
+At end of round 24, ate 6533 times, eaten 61876 times, success rate=0.095499
+Starting round 25 of 50
+At end of round 25, ate 6568 times, eaten 61265 times, success rate=0.096826
+Starting round 26 of 50
+At end of round 26, ate 6753 times, eaten 60427 times, success rate=0.100521
+Starting round 27 of 50
+At end of round 27, ate 7099 times, eaten 59885 times, success rate=0.105981
+Starting round 28 of 50
+At end of round 28, ate 7240 times, eaten 59051 times, success rate=0.109215
+Starting round 29 of 50
+At end of round 29, ate 7353 times, eaten 58158 times, success rate=0.112241
+Starting round 30 of 50
+At end of round 30, ate 7638 times, eaten 57448 times, success rate=0.117352
+Starting round 31 of 50
+At end of round 31, ate 7904 times, eaten 56525 times, success rate=0.122678
+Starting round 32 of 50
+At end of round 32, ate 8017 times, eaten 55629 times, success rate=0.125962
+Starting round 33 of 50
+At end of round 33, ate 8192 times, eaten 54839 times, success rate=0.129968
+Starting round 34 of 50
+At end of round 34, ate 8323 times, eaten 53875 times, success rate=0.133815
+Starting round 35 of 50
+At end of round 35, ate 8515 times, eaten 53071 times, success rate=0.138262
+Starting round 36 of 50
+At end of round 36, ate 8765 times, eaten 52043 times, success rate=0.144142
+Starting round 37 of 50
+At end of round 37, ate 9017 times, eaten 51112 times, success rate=0.149961
+Starting round 38 of 50
+At end of round 38, ate 9079 times, eaten 50213 times, success rate=0.153124
+Starting round 39 of 50
+At end of round 39, ate 9075 times, eaten 49029 times, success rate=0.156185
+Starting round 40 of 50
+At end of round 40, ate 9373 times, eaten 47865 times, success rate=0.163755
+Starting round 41 of 50
+At end of round 41, ate 9541 times, eaten 46765 times, success rate=0.169449
+Starting round 42 of 50
+At end of round 42, ate 9487 times, eaten 45282 times, success rate=0.173218
+Starting round 43 of 50
+At end of round 43, ate 9526 times, eaten 44253 times, success rate=0.177132
+Starting round 44 of 50
+At end of round 44, ate 9656 times, eaten 43193 times, success rate=0.182709
+Starting round 45 of 50
+At end of round 45, ate 9521 times, eaten 41482 times, success rate=0.186675
+Starting round 46 of 50
+At end of round 46, ate 9757 times, eaten 39812 times, success rate=0.196837
+Starting round 47 of 50
+At end of round 47, ate 9665 times, eaten 38003 times, success rate=0.202757
+Starting round 48 of 50
+At end of round 48, ate 9596 times, eaten 35603 times, success rate=0.212306
+Starting round 49 of 50
+At end of round 49, ate 9115 times, eaten 32409 times, success rate=0.219512
+Starting round 50 of 50
+At end of round 50, ate 8369 times, eaten 27960 times, success rate=0.230367
+Final weights:
+weight[0]=43.962096
+weight[1]=-4.579362
+weight[2]=0.055715
+weight[3]=0.135868
+weight[4]=0.273830
+weight[5]=0.115455
+weight[6]=-0.158422
+weight[7]=0.205788
+weight[8]=0.194333
+weight[9]=-0.187270
+weight[10]=0.109998
+weight[11]=0.333381
+weight[12]=0.471125
+weight[13]=-0.446889
+weight[14]=-0.491033
+weight[15]=0.188606
+weight[16]=-0.408071
+weight[17]=-0.373632
+weight[18]=-0.389704
+weight[19]=-0.411548
+weight[20]=-0.163760
+weight[21]=-0.468656
+weight[22]=0.048455
+weight[23]=0.452197
+weight[24]=0.316703
+zhangmao@iits-b473-20066:~/cscd84w16_space/CSCD84/A3$ ./QLearn 1522 1 1 2 0.9 5 50 1000000
+Creating maze of size 16 x 16
+  -Initializing a random, 4-connected graph.
+  -Prim's MST
+  -Inserting loops randomly
+  -Done!
+Maze size: 16x16
+Cat locations:
+8, 4
+Cheese locations:
+8, 13
+Mouse is at:
+4, 8
+Importing Sprites...
+Init framebuffer and maze buffer
+All done! let's play!
+43.962096 -4.579362
+Starting round 1 of 10
+At end of round 1, ate 8739 times, eaten 31182 times, success rate=0.218907
+43.962096 -4.579362
+Starting round 2 of 10
+At end of round 2, ate 8908 times, eaten 31416 times, success rate=0.220911
+43.962096 -4.579362
+Starting round 3 of 10
+At end of round 3, ate 8852 times, eaten 31400 times, success rate=0.219915
+43.962096 -4.579362
+Starting round 4 of 10
+At end of round 4, ate 8949 times, eaten 31184 times, success rate=0.222984
+43.962096 -4.579362
+Starting round 5 of 10
+At end of round 5, ate 8822 times, eaten 31394 times, success rate=0.219365
+43.962096 -4.579362
+Starting round 6 of 10
+At end of round 6, ate 8828 times, eaten 31258 times, success rate=0.220227
+43.962096 -4.579362
+Starting round 7 of 10
+At end of round 7, ate 8972 times, eaten 30985 times, success rate=0.224541
+43.962096 -4.579362
+Starting round 8 of 10
+At end of round 8, ate 8852 times, eaten 31084 times, success rate=0.221655
+43.962096 -4.579362
+Starting round 9 of 10
+At end of round 9, ate 8974 times, eaten 31452 times, success rate=0.221986
+43.962096 -4.579362
+Starting round 10 of 10
+At end of round 10, ate 8980 times, eaten 31213 times, success rate=0.223422
+Average success rate=0.221391
+
+
+
+
+
+
+
+
+
+
+
+
+
+zhangmao@iits-b473-20066:~/cscd84w16_space/CSCD84/A3$ ./QLearn 1522 1 1 2 0.9 3 50 10000000
+Creating maze of size 16 x 16
+  -Initializing a random, 4-connected graph.
+  -Prim's MST
+  -Inserting loops randomly
+  -Done!
+Maze size: 16x16
+Cat locations:
+8, 4
+Cheese locations:
+8, 13
+Mouse is at:
+4, 8
+Importing Sprites...
+Init framebuffer and maze buffer
+All done! let's play!
+Init framebuffer and maze buffer
+All done! let's play!
+Starting round 1 of 50
+At end of round 1, ate 25054 times, eaten 715089 times, success rate=0.033850
+Starting round 2 of 50
+At end of round 2, ate 26280 times, eaten 713919 times, success rate=0.035504
+Starting round 3 of 50
+At end of round 3, ate 27236 times, eaten 712531 times, success rate=0.036817
+Starting round 4 of 50
+At end of round 4, ate 28916 times, eaten 709858 times, success rate=0.039141
+Starting round 5 of 50
+At end of round 5, ate 30150 times, eaten 708175 times, success rate=0.040836
+Starting round 6 of 50
+At end of round 6, ate 31659 times, eaten 706249 times, success rate=0.042904
+Starting round 7 of 50
+At end of round 7, ate 33010 times, eaten 702726 times, success rate=0.044867
+Starting round 8 of 50
+At end of round 8, ate 34696 times, eaten 700552 times, success rate=0.047190
+Starting round 9 of 50
+At end of round 9, ate 36356 times, eaten 697220 times, success rate=0.049560
+Starting round 10 of 50
+At end of round 10, ate 37949 times, eaten 693823 times, success rate=0.051859
+Starting round 11 of 50
+At end of round 11, ate 39449 times, eaten 689973 times, success rate=0.054083
+Starting round 12 of 50
+At end of round 12, ate 41126 times, eaten 685895 times, success rate=0.056568
+Starting round 13 of 50
+At end of round 13, ate 43321 times, eaten 681239 times, success rate=0.059789
+Starting round 14 of 50
+At end of round 14, ate 44879 times, eaten 676927 times, success rate=0.062176
+Starting round 15 of 50
+At end of round 15, ate 46525 times, eaten 673497 times, success rate=0.064616
+Starting round 16 of 50
+At end of round 16, ate 48357 times, eaten 667350 times, success rate=0.067565
+Starting round 17 of 50
+At end of round 17, ate 50738 times, eaten 662719 times, success rate=0.071116
+Starting round 18 of 50
+At end of round 18, ate 52547 times, eaten 657033 times, success rate=0.074054
+Starting round 19 of 50
+At end of round 19, ate 54348 times, eaten 650692 times, success rate=0.077085
+Starting round 20 of 50
+At end of round 20, ate 56644 times, eaten 645464 times, success rate=0.080677
+Starting round 21 of 50
+At end of round 21, ate 57750 times, eaten 638719 times, success rate=0.082918
+Starting round 22 of 50
+At end of round 22, ate 60422 times, eaten 632610 times, success rate=0.087185
+Starting round 23 of 50
+At end of round 23, ate 62376 times, eaten 625809 times, success rate=0.090638
+Starting round 24 of 50
+At end of round 24, ate 63988 times, eaten 619799 times, success rate=0.093579
+Starting round 25 of 50
+At end of round 25, ate 66773 times, eaten 612223 times, success rate=0.098341
+Starting round 26 of 50
+At end of round 26, ate 68332 times, eaten 605097 times, success rate=0.101469
+Starting round 27 of 50
+At end of round 27, ate 70629 times, eaten 597683 times, success rate=0.105683
+Starting round 28 of 50
+At end of round 28, ate 72601 times, eaten 589545 times, success rate=0.109645
+Starting round 29 of 50
+At end of round 29, ate 74238 times, eaten 581812 times, success rate=0.113159
+Starting round 30 of 50
+At end of round 30, ate 76916 times, eaten 574058 times, success rate=0.118155
+Starting round 31 of 50
+At end of round 31, ate 78111 times, eaten 566396 times, success rate=0.121195
+Starting round 32 of 50
+At end of round 32, ate 80629 times, eaten 557316 times, success rate=0.126389
+Starting round 33 of 50
+At end of round 33, ate 82371 times, eaten 548487 times, success rate=0.130570
+Starting round 34 of 50
+At end of round 34, ate 83910 times, eaten 539559 times, success rate=0.134586
+Starting round 35 of 50
+At end of round 35, ate 85563 times, eaten 530518 times, success rate=0.138883
+Starting round 36 of 50
+At end of round 36, ate 86852 times, eaten 521450 times, success rate=0.142778
+Starting round 37 of 50
+At end of round 37, ate 88448 times, eaten 510019 times, success rate=0.147791
+Starting round 38 of 50
+At end of round 38, ate 90126 times, eaten 501197 times, success rate=0.152414
+Starting round 39 of 50
+At end of round 39, ate 91985 times, eaten 489566 times, success rate=0.158172
+Starting round 40 of 50
+At end of round 40, ate 93213 times, eaten 478460 times, success rate=0.163053
+Starting round 41 of 50
+At end of round 41, ate 94204 times, eaten 467796 times, success rate=0.167623
+Starting round 42 of 50
+At end of round 42, ate 95323 times, eaten 455442 times, success rate=0.173074
+Starting round 43 of 50
+At end of round 43, ate 96231 times, eaten 441442 times, success rate=0.178977
+Starting round 44 of 50
+At end of round 44, ate 96875 times, eaten 427952 times, success rate=0.184585
+Starting round 45 of 50
+At end of round 45, ate 97753 times, eaten 413063 times, success rate=0.191366
+Starting round 46 of 50
+At end of round 46, ate 97792 times, eaten 396760 times, success rate=0.197739
+Starting round 47 of 50
+At end of round 47, ate 96975 times, eaten 377722 times, success rate=0.204288
+Starting round 48 of 50
+At end of round 48, ate 95589 times, eaten 354734 times, success rate=0.212268
+Starting round 49 of 50
+At end of round 49, ate 92554 times, eaten 325964 times, success rate=0.221147
+Starting round 50 of 50
+At end of round 50, ate 56138 times, eaten 333536 times, success rate=0.144064
+Final weights:
+weight[0]=48.087819
+weight[1]=-5.268497
+weight[2]=0.055715
+weight[3]=0.135868
+weight[4]=0.273830
+weight[5]=0.115455
+weight[6]=-0.158422
+weight[7]=0.205788
+weight[8]=0.194333
+weight[9]=-0.187270
+weight[10]=0.109998
+weight[11]=0.333381
+weight[12]=0.471125
+weight[13]=-0.446889
+weight[14]=-0.491033
+weight[15]=0.188606
+weight[16]=-0.408071
+weight[17]=-0.373632
+weight[18]=-0.389704
+weight[19]=-0.411548
+weight[20]=-0.163760
+weight[21]=-0.468656
+weight[22]=0.048455
+weight[23]=0.452197
+weight[24]=0.316703
+zhangmao@iits-b473-20066:~/cscd84w16_space/CSCD84/A3$ ./QLearn 1522 1 1 2 0.9 5 50 10000000
+Creating maze of size 16 x 16
+  -Initializing a random, 4-connected graph.
+  -Prim's MST
+  -Inserting loops randomly
+  -Done!
+Maze size: 16x16
+Cat locations:
+8, 4
+Cheese locations:
+8, 13
+Mouse is at:
+4, 8
+Importing Sprites...
+Init framebuffer and maze buffer
+All done! let's play!
+48.087819 -5.268497
+Starting round 1 of 10
+At end of round 1, ate 8739 times, eaten 31182 times, success rate=0.218907
+48.087819 -5.268497
+Starting round 2 of 10
+At end of round 2, ate 8908 times, eaten 31416 times, success rate=0.220911
+48.087819 -5.268497
+Starting round 3 of 10
+At end of round 3, ate 8852 times, eaten 31400 times, success rate=0.219915
+48.087819 -5.268497
+Starting round 4 of 10
+At end of round 4, ate 8949 times, eaten 31184 times, success rate=0.222984
+48.087819 -5.268497
+Starting round 5 of 10
+At end of round 5, ate 8822 times, eaten 31394 times, success rate=0.219365
+48.087819 -5.268497
+Starting round 6 of 10
+At end of round 6, ate 8828 times, eaten 31258 times, success rate=0.220227
+48.087819 -5.268497
+Starting round 7 of 10
+At end of round 7, ate 8972 times, eaten 30985 times, success rate=0.224541
+48.087819 -5.268497
+Starting round 8 of 10
+At end of round 8, ate 8852 times, eaten 31084 times, success rate=0.221655
+48.087819 -5.268497
+Starting round 9 of 10
+At end of round 9, ate 8974 times, eaten 31452 times, success rate=0.221986
+48.087819 -5.268497
+Starting round 10 of 10
+At end of round 10, ate 8980 times, eaten 31213 times, success rate=0.223422
+Average success rate=0.221391
+zhangmao@iits-b473-20066:~/cscd84w16_space/CSCD84/A3$ ./QLearn 1522 1 1 2 0.9 5 50 1000000
+Creating maze of size 16 x 16
+  -Initializing a random, 4-connected graph.
+  -Prim's MST
+  -Inserting loops randomly
+  -Done!
+Maze size: 16x16
+Cat locations:
+8, 4
+Cheese locations:
+8, 13
+Mouse is at:
+4, 8
+Importing Sprites...
+Init framebuffer and maze buffer
+All done! let's play!
+48.087819 -5.268497
+Starting round 1 of 10
+At end of round 1, ate 8739 times, eaten 31182 times, success rate=0.218907
+48.087819 -5.268497
+Starting round 2 of 10
+At end of round 2, ate 8908 times, eaten 31416 times, success rate=0.220911
+48.087819 -5.268497
+Starting round 3 of 10
+At end of round 3, ate 8852 times, eaten 31400 times, success rate=0.219915
+48.087819 -5.268497
+Starting round 4 of 10
+At end of round 4, ate 8949 times, eaten 31184 times, success rate=0.222984
+48.087819 -5.268497
+Starting round 5 of 10
+At end of round 5, ate 8822 times, eaten 31394 times, success rate=0.219365
+48.087819 -5.268497
+Starting round 6 of 10
+At end of round 6, ate 8828 times, eaten 31258 times, success rate=0.220227
+48.087819 -5.268497
+Starting round 7 of 10
+At end of round 7, ate 8972 times, eaten 30985 times, success rate=0.224541
+48.087819 -5.268497
+Starting round 8 of 10
+At end of round 8, ate 8852 times, eaten 31084 times, success rate=0.221655
+48.087819 -5.268497
+Starting round 9 of 10
+At end of round 9, ate 8974 times, eaten 31452 times, success rate=0.221986
+48.087819 -5.268497
+Starting round 10 of 10
+At end of round 10, ate 8980 times, eaten 31213 times, success rate=0.223422
+Average success rate=0.221391

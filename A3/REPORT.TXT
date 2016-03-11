@@ -47,7 +47,7 @@ but explain carefully when needed.
      * IMPORTANT! * For each training run, SAVE the Qtable
      you will re-use the Qtables later.
 
-     # Experiment 1, 100000 training trials, 20 rounds, random seed 1522,
+     # Experiment 1, 10000(0) training trials, 20 rounds, random seed 1522,
      # 8x8 grid, cat-smartness .9
 
      Initial mouse winning rate (first rate obtained when training starts):
@@ -59,24 +59,28 @@ but explain carefully when needed.
      
      Average success rate=0.273204
 
-     # Experiment 2, 10000000 training trials, 50 rounds, random seed 1522,
+     # Experiment 2, 1000000 training trials, 50 rounds, random seed 1522,
      # 8x8 grid, cat-smartness .9
 
      Initial mouse winning rate (first rate obtained when training starts):
 
-     success rate=0.082282
+     success rate=0.082610  
+
+     *success rate=0.082282 (10000000 trails)
 
      Train your mouse, and once trained, run the evaluation and  
      record the mouse winning rate:
 
-     Average success rate=0.282899
+     Average success rate=0.255640
+
+     *Average success rate=0.282899 (10000000 trails)
 
      Would the mouse keep improving and become invincible if
      you ran, say, 100,000,000 training rounds per batch?     
 
      No I am afraid not. The success rate (performance) will experience 
      diminishing returns as the number of rounds increase,
-     and doesn't seem to reach an optimal value.
+     and won't really reach an optimal value.
 
 
      NOTE: I tried the game mode seems the mouse is doing pretty good,
@@ -91,16 +95,22 @@ but explain carefully when needed.
 	
      Mouse Winning Rate:
 
-     Average success rate=0.168636
+     Average success rate=0.155091
+
+     *Average success rate=0.168636 (10000000 trails)
 
      # Experiment 4 - Run the evaluation on the 8x8 grid, cat-smartness=.9,
      # but using the random seed 31415 for the game.
 	
      Mouse Winning Rate:
 
-     Average success rate=0.175250
+     Average success rate=0.142546
+
+     *Average success rate=0.175250 (10000000 trails) 
 
      Average rate for Experiement 3 and Experiment 4:
+
+     0.14881850000000002
 
      Compare with the rate obtained in experiment 2. What is happening here?
 
@@ -110,41 +120,53 @@ but explain carefully when needed.
 5 .- (3 marks)
 
      # Experiment 5 - Train your mouse on the 16x16 grid, using random seed
-     # 1522, 10000000 trials, and 50 training rounds. Cat-smartness=.9
+     # 1522, 1000000 trials, and 50 training rounds. Cat-smartness=.9
 
      Initial mouse winning rate (first rate obtained when training starts):
 
-     success rate=0.032498
+     success rate=0.032938
+
+     *success rate=0.032498 (10000000 trails)
 
      Mouse Winning Rate (from evaluation after training):
 
-     Average success rate=0.144637
+     Average success rate=0.127740
+
+     *Average success rate=0.144637 (10000000 trails)
 
      Compare the final winning rate with that from Experiment 2, what can
      you say about the difference in winning rates?
 
-     The initial success rate is lower than in 8X8 grid, but slowly grows in training.
-     I guess this is because with a much larger QTable, 
-     it takes more efforts to learn the entries.
+     The initial success rate is lower than in 8X8 grid, but still grows 
+     slowly in training.
+     I guess this is because with a much larger QTable, it takes more efforts 
+     to learn the entries. The initial state also suffers from more 
+     chances to be eaten as many states may not have been learnt well yet.
 
 6 .- (2 marks) Is standard Q-Learning a rasonable strategy for environments
      that change constantly? discuss based on the above
 
      No it is not reasonable for changing enviroments, because the trained 
      QTable entries won't fit very well in the new enviroments and the learnt 
-     policies no longer help this case.
+     policies no longer help much in the new case.
 
 7 .- (5 marks) Explain your feature set for feature-based Q Learning, and
                explain why and how each feature is expected to contribute
 	       to helping your mouse win
 
      I tried mutiple features including distances to varies objects, number of 
-     threats(cats) and/or targets(cheeses) within specific distances, etc.
+     threats(cats) and/or targets(cheeses) within specific distances, etc. with
+     no luck....
 
-     But turned out they all doesn't work out very well as the manhatton distance 
-     traps the mouse in a dead loop until the mouse eats it.
+     For now I used two feature only:
+     * the closest manhatton distance to cheese;
+     * if there is a mouse nearby in 2 manhantton distance
 
-     Then I noticed the two headers defiend in QLearn.h:
+     Turned out the above features all failed to work out very well, 
+     I think this is because the manhatton distance frequently traps the mouse in a 
+     dead loop until the mouse eats it.
+
+     Then I noticed the two headers defined in QLearn.h:
      void expensiveFeature1(double gr[max_graph_size][4], int path[max_graph_size][2],int start_x, int start_y, int (*goalCheck)(int x, int y, int pos[5][2]), int pos[5][2], int s_type, int *l, int size_X);
      int checkForGoal(int x, int y, int pos[5][2]);
 
@@ -155,6 +177,7 @@ but explain carefully when needed.
      TAT
 
 8 .- (2 marks each) Carry out the following experiments:
+ ./QLearn 1522 1 1 2 0.9 3 50 1000000
 
      # Experiment 6: Train your mouse using feature-based Q-Learning, on
      # the 16x16 grid, one cat, and one cheese, cat-smartness=.9,  
@@ -162,22 +185,24 @@ but explain carefully when needed.
 
      Initial mouse winning rate (first rate obtained when training starts):
      
-     success rate=0.033368
+     success rate=0.033291
 
      Mouse Winning Rate (from evaluation after training):
 
-     Average success rate=0.056689
+     Average success rate=0.221391
 
      Compare this rate against the rate obtained in Experiment #5, what
      are your conclusions regarding the utility of feature-based
      Q-Learning?
 
-     Hmm, my feature set was not good... so no advantages could be seen...
+     The intial success rate are mostly the same, but by evalution results,
+     featured-based learning performs better than standard QTable.
 
-     But I suppose even with a great set of features running feature-based and
-     standard learning won't make too many differences **on a specific game setting**, either 
-     feature-based learning or standard learning could do better than the other
-     depending on the environment.
+     Yet I suppose even with a great set of features, running feature-based and
+     standard learning won't make too many differences **[on a specific game setting]**, either feature-based learning or standard learning could do better than the other
+     depending on the environment. (e.g. in this case a large state set with fixed # of
+     trails and rounds, QTable might not be able to learn all states very well, so it 
+     turned out feature-based learning captured more characteristics of the wining state)
 
      # Experiment 7, using the saved weights from Experiment 6 (no
      # re-training) run the evaluation using random seed 4289, same
@@ -185,7 +210,7 @@ but explain carefully when needed.
 
      Mouse Winning Rate (from evaluation after training):
 
-     Average success rate=0.061839
+     Average success rate=0.218680
 
      # Experiment 8, using the saved weights from Experiment 6 (no
      # re-training) run the evaluation using random seed 31415, same
@@ -193,7 +218,7 @@ but explain carefully when needed.
 
      Mouse Winning Rate (from evaluation after training):
 
-     Average success rate=0.080465
+     Average success rate=0.262455
 
      Comparing the winning rates from Experiments #7 and #8 against
      those from Experiment #6, what can you conclude about feature-
