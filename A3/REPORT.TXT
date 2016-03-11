@@ -80,7 +80,7 @@ but explain carefully when needed.
 
 
      NOTE: I tried the game mode seems the mouse is doing pretty good,
-     don't really understand why the success rate remains so low. :P
+     don't really understand why the success rate remains so low. :S
 
 4 .- (2 marks each) 
      
@@ -162,7 +162,7 @@ but explain carefully when needed.
 
      Initial mouse winning rate (first rate obtained when training starts):
      
-     success rate=0.080514
+     success rate=0.033368
 
      Mouse Winning Rate (from evaluation after training):
 

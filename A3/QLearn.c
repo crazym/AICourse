@@ -350,7 +350,7 @@ void evaluateFeatures(double gr[max_graph_size][4],double features[25], int mous
       i++;
     }
     // in favour of smaller cheese dist
-    features[0] = size_X*2 - closest_cheese_dist;
+    features[0] = (size_X*2 - closest_cheese_dist) / (float)(size_X*2);
 
     // feature 1: if there are cats around in 2 manhantton distances
     int closest_cat_dist, mouse_cat_dist;
@@ -364,7 +364,12 @@ void evaluateFeatures(double gr[max_graph_size][4],double features[25], int mous
       }
       i++;
     }
-    features[1] = closest_cat_dist;
+    
+    if (closest_cat_dist > 2) {
+      features[1] = 1.0;
+    } else {
+      features[1] = 5;
+    }
 
     // feature 2: if mouse is in a deadend
     int cur_index, ngbr_count;
@@ -376,6 +381,7 @@ void evaluateFeatures(double gr[max_graph_size][4],double features[25], int mous
     }
     
     features[2] = (ngbr_count - 1) *3;
+
 }
 
 double Qsa(double weights[25], double features[25])
