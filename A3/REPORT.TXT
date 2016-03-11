@@ -59,7 +59,7 @@ but explain carefully when needed.
      
      Average success rate=0.273204
 
-     # Experiment 2, 1000000 training trials, 50 rounds, random seed 1522,
+     # Experiment 2, 10000000 training trials, 50 rounds, random seed 1522,
      # 8x8 grid, cat-smartness .9
 
      Initial mouse winning rate (first rate obtained when training starts):
@@ -110,20 +110,22 @@ but explain carefully when needed.
 5 .- (3 marks)
 
      # Experiment 5 - Train your mouse on the 16x16 grid, using random seed
-     # 1522, 1000000 trials, and 50 training rounds. Cat-smartness=.9
+     # 1522, 10000000 trials, and 50 training rounds. Cat-smartness=.9
 
      Initial mouse winning rate (first rate obtained when training starts):
 
+     success rate=0.032498
+
      Mouse Winning Rate (from evaluation after training):
 
-     Average success rate=0.028543
+     Average success rate=0.144637
 
      Compare the final winning rate with that from Experiment 2, what can
      you say about the difference in winning rates?
 
-     The success rate dropped significantly, as the game settings changed 
-     and QTable structure changed as well, the learnt model no longer works.
-
+     The initial success rate is lower than in 8X8 grid, but slowly grows in training.
+     I guess this is because with a much larger QTable, 
+     it takes more efforts to learn the entries.
 
 6 .- (2 marks) Is standard Q-Learning a rasonable strategy for environments
      that change constantly? discuss based on the above
@@ -146,7 +148,7 @@ but explain carefully when needed.
      void expensiveFeature1(double gr[max_graph_size][4], int path[max_graph_size][2],int start_x, int start_y, int (*goalCheck)(int x, int y, int pos[5][2]), int pos[5][2], int s_type, int *l, int size_X);
      int checkForGoal(int x, int y, int pos[5][2]);
 
-     I guess a wayyy better approach will be finding the **path** to the target and check that distance instead, and we may also compute the distances to threats for every step in the path. 
+     I guess a wayyy better approach will be finding the **path** to the target and check that distance instead, and we may also compute the distances to threats for every step in the path. (hmm, for example: A* search?)
 
      But unfortunately I ran out of time...
 
@@ -160,11 +162,22 @@ but explain carefully when needed.
 
      Initial mouse winning rate (first rate obtained when training starts):
      
+     success rate=0.080514
+
      Mouse Winning Rate (from evaluation after training):
+
+     Average success rate=0.056689
 
      Compare this rate against the rate obtained in Experiment #5, what
      are your conclusions regarding the utility of feature-based
      Q-Learning?
+
+     Hmm, my feature set was not good... so no advantages could be seen...
+
+     But I suppose even with a great set of features running feature-based and
+     standard learning won't make too many differences **on a specific game setting**, either 
+     feature-based learning or standard learning could do better than the other
+     depending on the environment.
 
      # Experiment 7, using the saved weights from Experiment 6 (no
      # re-training) run the evaluation using random seed 4289, same
@@ -172,16 +185,24 @@ but explain carefully when needed.
 
      Mouse Winning Rate (from evaluation after training):
 
+     Average success rate=0.061839
+
      # Experiment 8, using the saved weights from Experiment 6 (no
      # re-training) run the evaluation using random seed 31415, same
      # 1 cheese, 1 cat, and cat-smartness=.9, 16x16 grid
 
      Mouse Winning Rate (from evaluation after training):
 
+     Average success rate=0.080465
+
      Comparing the winning rates from Experiments #7 and #8 against
      those from Experiment #6, what can you conclude about feature-
      based Q-Learning in terms of its ability to deal with changes 
      to the environment?
+
+     The rates didn't change too much among the 3 game environments, 
+     feature-based learning should does better than QTable learning
+     in dealing with environment changes.
 
 9 .- (3 marks each) Carry out the following experiments:
 
@@ -209,6 +230,14 @@ but explain carefully when needed.
      the usefulness and applicability of standard Q-Learning vs. 
      feature-based Q-learning?
 
+     My code loops forever on the above settings...
+     But theoretically speaking, with a good set of features that captures most of 
+     the characteristics of the game state, feasture-based learning afvances over QTable learning since it adapts to changes more flexibly and actively.:)
+
+
+***NOTE*** Greater than 1 cats' case does not work for me at all... I spent quite a few hours
+detecting where the problem is, but seems the driver(core) simply doesn't call the 
+action function after the update. 
 
 _____________________________________________________
 
