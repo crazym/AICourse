@@ -62,7 +62,24 @@ int train_1layer_net(double sample[INPUTS],int label,double (*sigmoid)(double in
   *          be able to complete this function.
   ***********************************************************************************************************/
 
-  return(0);		// <--- This should return the class for this sample
+  // return(0);		// <--- This should return the class for this sample
+  double activations[OUTPUTS];
+  double max_output = -999;
+  int opt_class=0;
+
+  feedforward_1layer(sample, sigmoid, weights_io, activations);
+  backprop_1layer(sample, activations, sigmoid, label, weights_io);
+
+  // computer outputs again after updating the weights
+  feedforward_1layer(sample, sigmoid, weights_io, activations);
+  for (int o=0; o<OUTPUTS; o++) {
+    if (activations[o] > max_output) {
+      max_output=activations[o];
+      opt_class=o;
+    }
+  }
+
+  return opt_class;
 }
 
 int classify_1layer(double sample[INPUTS],int label,double (*sigmoid)(double input), double weights_io[INPUTS][OUTPUTS])
@@ -93,10 +110,22 @@ int classify_1layer(double sample[INPUTS],int label,double (*sigmoid)(double inp
   *          be able to complete this function.
   ***********************************************************************************************************/
  
-  return(0);   	// <---	This should return the class for this sample
+  // return(0);   	// <---	This should return the class for this sample
+  double activations[OUTPUTS];
+  double max_output = -999;
+  int opt_class=0;
+  feedforward_1layer(sample, sigmoid, weights_io, activations);
+  for (int o=0; o<OUTPUTS; o++) {
+    if (activations[o] > max_output) {
+      max_output=activations[o];
+      opt_class=o;
+    }
+  }
+
+  return opt_class;
 }
 
-void feedforward_1layer(double sample[785], double (*sigmoid)(double input), double weights_io[INPUTS][OUTPUTS], double activations[OUTPUTS])
+void feedforward_1layer(double sample[INPUTS], double (*sigmoid)(double input), double weights_io[INPUTS][OUTPUTS], double activations[OUTPUTS])
 {
  /*
   *  This function performs the feedforward pass of the network's computation - it propagates information
@@ -121,6 +150,17 @@ void feedforward_1layer(double sample[785], double (*sigmoid)(double input), dou
    *        with a logistic activation function.
    ******************************************************************************************************/
   
+   double input_weight_sum;
+
+   for (int o=0; o<OUTPUTS; o++) {
+    input_weight_sum = 0;
+    for (int i=0; i<INPUTS; i++) {
+      // sum up input-weight products
+      input_weight_sum += weights_io[i][o] * sample[i];
+    }
+    // pass the scaled input to sigmoid to update the activation value
+    activations[o] = sigmoid(input_weight_sum*SIGMOID_SCALE);
+   }
 }
 
 void backprop_1layer(double sample[INPUTS], double activations[OUTPUTS], double (*sigmoid)(double input), int label, double weights_io[INPUTS][OUTPUTS])
@@ -152,7 +192,28 @@ void backprop_1layer(double sample[INPUTS], double activations[OUTPUTS], double 
     *        the network. You will need to find a way to figure out which sigmoid function you're
     *        using. Then use the procedure discussed in lecture to compute weight updates.
     * ************************************************************************************************/
-   
+   // error for outputs
+    double target[OUTPUTS], error[OUTPUTS], d_error[OUTPUTS];
+
+    // initiatte target values for each neuron
+   for (int o=0; o< OUTPUTS; o++){
+      //   target value =0.8 if current neuron corresponds to the correct label, o.w. 0.2
+      if (o==label) target[o]=0.8;
+      else target[o]=0.2;
+      // compute error
+      error[o] = target[o] - activations[o];
+
+      if (sigmoid(0) == 1) {
+        d_error[o] = error[o] * (activations[o] * (1 - activations[o]));
+      } else{
+        //assume legal inputs, sigmoid(0) = 0 indicates it's tanh()
+        d_error[o] = error[o] * (1 - activations[o]*activations[o]);
+      }
+
+      for (int i=0; i < INPUTS; i++) {
+        weights_io[i][o] += ALPHA * d_error[o] * sample[i];
+      }
+   }
 }
 
 int train_2layer_net(double sample[INPUTS],int label,double (*sigmoid)(double input), int units, double weights_ih[INPUTS][MAX_HIDDEN], double weights_ho[MAX_HIDDEN][OUTPUTS])
@@ -304,5 +365,5 @@ double logistic(double input)
 {
  // This function returns the value of the logistic function evaluated on input
  // TO DO: Implement this function!
- return(0);		// <--- Should return the value of the logistic function on the input 
+  return 1.0 / (1.0 + exp(-input));
 }
