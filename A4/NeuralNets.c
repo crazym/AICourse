@@ -62,16 +62,18 @@ int train_1layer_net(double sample[INPUTS],int label,double (*sigmoid)(double in
   *          be able to complete this function.
   ***********************************************************************************************************/
 
-  // return(0);		// <--- This should return the class for this sample
   double activations[OUTPUTS];
   double max_output = -999;
   int opt_class=0;
 
+  //update activations
   feedforward_1layer(sample, sigmoid, weights_io, activations);
+  // update weights
   backprop_1layer(sample, activations, sigmoid, label, weights_io);
 
   // computer outputs again after updating the weights
   feedforward_1layer(sample, sigmoid, weights_io, activations);
+  // find the optimal output neuron
   for (int o=0; o<OUTPUTS; o++) {
     if (activations[o] > max_output) {
       max_output=activations[o];
@@ -110,7 +112,6 @@ int classify_1layer(double sample[INPUTS],int label,double (*sigmoid)(double inp
   *          be able to complete this function.
   ***********************************************************************************************************/
  
-  // return(0);   	// <---	This should return the class for this sample
   double activations[OUTPUTS];
   double max_output = -999;
   int opt_class=0;
@@ -203,7 +204,7 @@ void backprop_1layer(double sample[INPUTS], double activations[OUTPUTS], double 
       // compute error
       error[o] = target[o] - activations[o];
 
-      if (sigmoid(0) == 1) {
+      if (sigmoid(0) == 1) { // logistic(0) == 1
         d_error[o] = error[o] * (activations[o] * (1 - activations[o]));
       } else{
         //assume legal inputs, sigmoid(0) = 0 indicates it's tanh()
@@ -230,9 +231,9 @@ int train_2layer_net(double sample[INPUTS],int label,double (*sigmoid)(double in
   *              tangent. You have to implement the logistic function, but math.h provides tanh() already
   *   units   -  Number of units in the hidden layer
   *   weights_ih - Array of weights connecting inputs to hidden-layer neurons, weights_ih[i][j] is the 
-  *                weight from input i to hidden neuron j. This array has a size of units 785 x 10.
+  *                weight from input i to hidden neuron j. This array has a size of units 785 x 785.
   *   weights_ho - Array of weights connecting hidden-layer units to output neurons, weights_ho[i][j] is the 
-  *                weight from hidden unit i to output neuron j. This array has a size of units x 10.
+  *                weight from hidden unit i to output neuron j. This array has a size of units 785 x 10.
   *
   *   Return values:
   *     An int in [0,9] corresponding to the class that your current network has chosen for this training
@@ -251,7 +252,23 @@ int train_2layer_net(double sample[INPUTS],int label,double (*sigmoid)(double in
   *          be able to complete this function.
   ***********************************************************************************************************/
   
-  return(0);		// <--- Should return the class for this sample  
+  double activations[OUTPUTS], h_activations[units];
+  double max_output = -999;
+  int opt_class=0;
+
+  feedforward_2layer(sample, sigmoid, weights_ih, weights_ho, h_activations, activations, units);
+  backprop_2layer(sample, h_activations, activations, sigmoid, label, weights_ih, weights_ho, units);
+
+  // computer outputs again after updating the weights
+  feedforward_2layer(sample, sigmoid, weights_ih, weights_ho, h_activations, activations, units);
+  for (int o=0; o<OUTPUTS; o++) {
+    if (activations[o] > max_output) {
+      max_output=activations[o];
+      opt_class=o;
+    }
+  }
+
+  return opt_class;
 }
 
 int classify_2layer(double sample[INPUTS],int label,double (*sigmoid)(double input), int units, double weights_ih[INPUTS][MAX_HIDDEN], double weights_ho[MAX_HIDDEN][OUTPUTS])
@@ -285,7 +302,23 @@ int classify_2layer(double sample[INPUTS],int label,double (*sigmoid)(double inp
   *          be able to complete this function.
   ***********************************************************************************************************/
 
-  return(0);		// <--- Should return the class for this sample  
+  double activations[OUTPUTS], h_activations[units];
+  double max_output = -999;
+  int opt_class=0;
+
+  feedforward_2layer(sample, sigmoid, weights_ih, weights_ho, h_activations, activations, units);
+  backprop_2layer(sample, h_activations, activations, sigmoid, label, weights_ih, weights_ho, units);
+
+  // computer outputs again after updating the weights
+  feedforward_2layer(sample, sigmoid, weights_ih, weights_ho, h_activations, activations, units);
+  for (int o=0; o<OUTPUTS; o++) {
+    if (activations[o] > max_output) {
+      max_output=activations[o];
+      opt_class=o;
+    }
+  }
+
+  return opt_class;
 }
 
 
@@ -322,7 +355,23 @@ void feedforward_2layer(double sample[INPUTS], double (*sigmoid)(double input), 
    *                  the scaling factor has to be adjusted by the factor
    *                  SIGMOID_SCALE*(MAX_HIDDEN/units).
    **************************************************************************************************/
-  
+  double input_weight_sum[units], hidden_layer_sum;
+
+  for (int o=0; o<OUTPUTS; o++) {
+    hidden_layer_sum =0;
+    for (int h=0; h<units; h++) {
+      input_weight_sum[h] = 0;
+      for (int i=0; i<INPUTS; i++) {
+        // sum up input-weight products for hidden neuron h
+        input_weight_sum[h] += weights_ih[i][h] * sample[i];
+      }
+      // pass the scaled input to sigmoid to update the activation value
+      h_activations[h] = sigmoid(input_weight_sum[h]*SIGMOID_SCALE);
+
+      hidden_layer_sum += weights_ho[h][o] * h_activations[h];
+    }
+    activations[o] = sigmoid(hidden_layer_sum*SIGMOID_SCALE*(MAX_HIDDEN/units));
+  }
 }
 
 void backprop_2layer(double sample[INPUTS],double h_activations[MAX_HIDDEN], double activations[OUTPUTS], double (*sigmoid)(double input), int label, double weights_ih[INPUTS][MAX_HIDDEN], double weights_ho[MAX_HIDDEN][OUTPUTS], int units)
@@ -358,7 +407,52 @@ void backprop_2layer(double sample[INPUTS],double h_activations[MAX_HIDDEN], dou
     *        the network. You will need to find a way to figure out which sigmoid function you're
     *        using. Then use the procedure discussed in lecture to compute weight updates.
     * ************************************************************************************************/
-   
+  // error for outputs
+  double target[OUTPUTS], error[OUTPUTS], d_error[OUTPUTS];
+  double hidden_error[units], d_hidden_error[units];
+  double orig_weights_ho[MAX_HIDDEN][OUTPUTS];
+
+  for (int i=0; i<INPUTS; i++) {
+    for (int h=0; h<units; h++) {
+
+      hidden_error[h]= 0;
+      
+      // initiatte target values for each neuron
+      for (int o=0; o< OUTPUTS; o++){
+        //   target value =0.8 if current neuron corresponds to the correct label, o.w. 0.2
+        if (o==label) target[o]=0.8;
+        else target[o]=0.2;
+        // compute error
+        error[o] = target[o] - activations[o];
+
+        if (sigmoid(0) == 1) { // logistic(0) == 1
+          d_error[o] = error[o] * (activations[o] * (1 - activations[o]));
+        } else{
+          //assume legal inputs, sigmoid(0) = 0 indicates it's tanh()
+          d_error[o] = error[o] * (1 - activations[o]*activations[o]);
+        }
+
+        // keep a copy of original hidden-to-output weight
+        orig_weights_ho[h][o] = weights_ho[h][o];
+        // update weights from hidden neuron h to output neuron o
+        weights_ho[h][o] += ALPHA * d_error[o] * h_activations[h];
+
+        // compute error for hidden neuron h
+        hidden_error[h] += d_error[o]*orig_weights_ho[h][o];  
+      }
+
+      // now we have hidden_error for current hidden neuron h
+      if (sigmoid(0) == 1) { // logistic(0) == 1
+        d_hidden_error[h] = hidden_error[h] * (h_activations[h] * (1 - h_activations[h]));
+      } else{
+        //assume legal inputs, sigmoid(0) = 0 indicates it's tanh()
+        d_hidden_error[h] = hidden_error[h] * (1 - h_activations[h]*h_activations[h]);
+      }
+  
+      // update weights from input i to hidden layer h
+      weights_ih[i][h] += ALPHA * d_hidden_error[h] * sample[i];
+    }
+  }
 }
 
 double logistic(double input)
