@@ -204,7 +204,7 @@ void backprop_1layer(double sample[INPUTS], double activations[OUTPUTS], double 
       // compute error
       error[o] = target[o] - activations[o];
 
-      if (sigmoid(0) == 1) { // logistic(0) == 1
+      if (sigmoid(0) == 0.5) { // logistic(0) = 1/(1+e^0) = 1/2 = 0.5
         d_error[o] = error[o] * (activations[o] * (1 - activations[o]));
       } else{
         //assume legal inputs, sigmoid(0) = 0 indicates it's tanh()
@@ -420,7 +420,7 @@ void backprop_2layer(double sample[INPUTS],double h_activations[MAX_HIDDEN], dou
       // initiatte target values for each neuron
       for (int o=0; o< OUTPUTS; o++){
 
-        if (sigmoid(0) == 1) {
+        if (sigmoid(0) == 0.5) {
           // target value =0.8 if current neuron corresponds to the correct label, o.w. 0.2
           if (o==label) target[o]=0.8;
           else target[o]=0.2;
@@ -433,7 +433,7 @@ void backprop_2layer(double sample[INPUTS],double h_activations[MAX_HIDDEN], dou
         // compute error
         error[o] = target[o] - activations[o];
 
-        if (sigmoid(0) == 1) { // logistic(0) == 1
+        if (sigmoid(0) == 0.5) { // logistic(0) == 0.5
           d_error[o] = error[o] * (activations[o] * (1 - activations[o]));
         } else{
           //assume legal inputs, sigmoid(0) = 0 indicates it's tanh()
@@ -450,7 +450,7 @@ void backprop_2layer(double sample[INPUTS],double h_activations[MAX_HIDDEN], dou
       }
 
       // now we have hidden_error for current hidden neuron h
-      if (sigmoid(0) == 1) { // logistic(0) == 1
+      if (sigmoid(0) == 0.5) { // logistic(0) == 0.5
         d_hidden_error[h] = hidden_error[h] * (h_activations[h] * (1 - h_activations[h]));
       } else{
         //assume legal inputs, sigmoid(0) = 0 indicates it's tanh()
