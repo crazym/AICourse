@@ -240,19 +240,19 @@ When there are only 3 hidden units, the neural network over-summarized the input
 
 Using logistic activation function: sigmoid=1
 
-zhangmao@iits-b473-20049:~/cscd84w16_space/CSCD84/A4$ ./NeuralNets 3 150 0 10 0
+zhangmao@iits-b473-20068:~/cscd84w16_space/CSCD84/A4$ ./NeuralNets 3 150 0 10 0
 Evaluating performance on test dataset... mode=2, units=150, sigmoid=0
-Digit 0, correct classification rate=0.996939
-Digit 1, correct classification rate=0.999119
-Digit 2, correct classification rate=0.997093
-Digit 3, correct classification rate=0.991089
-Digit 4, correct classification rate=0.995927
-Digit 5, correct classification rate=0.992152
-Digit 6, correct classification rate=1.000000
-Digit 7, correct classification rate=1.000000
-Digit 8, correct classification rate=0.995893
-Digit 9, correct classification rate=0.999009
-Average correct classification rate: 0.996722
+Digit 0, correct classification rate=0.998980
+Digit 1, correct classification rate=0.998238
+Digit 2, correct classification rate=0.990310
+Digit 3, correct classification rate=0.993069
+Digit 4, correct classification rate=0.998982
+Digit 5, correct classification rate=0.983184
+Digit 6, correct classification rate=0.997912
+Digit 7, correct classification rate=0.997082
+Digit 8, correct classification rate=0.994867
+Digit 9, correct classification rate=0.994054
+Average correct classification rate: 0.994668
 
 9 .- (5 marks) Describe how you would build a network to play the cat
 	        and mouse game (move the mouse to help it survive).
