@@ -10,11 +10,11 @@ mark.
 
 ________________________________________________
 
-Student Name (last, first):
+Student Name (last, first): ZHANG, Maoting
 
-Student number:
+Student number: 999590633
 
-UTORid:
+UTORid: zhangmao
 
 READ THIS AND SIGN YOUR NAME AT THE END:
 
@@ -22,7 +22,7 @@ READ THIS AND SIGN YOUR NAME AT THE END:
 honesty and plaguarism. All work submitted as part
 of this assignment is my own.
 
-	Signed: _(your name goes here)__
+	Signed: _MintyZ__
 
 
 (-5 marks for failing to provide the identifying
@@ -38,11 +38,70 @@ but explain carefully when needed.
 	       Copy/paste the reported classification rates for:
 	 	
 	       Training data (last training round):
+**** After 170000 iterations (20):
+Digit 0, correct classification rate=0.950980
+Digit 1, correct classification rate=0.970383
+Digit 2, correct classification rate=0.805195
+Digit 3, correct classification rate=0.820652
+Digit 4, correct classification rate=0.895706
+Digit 5, correct classification rate=0.708940
+Digit 6, correct classification rate=0.923404
+Digit 7, correct classification rate=0.877301
+Digit 8, correct classification rate=0.734607
+Digit 9, correct classification rate=0.772908
+Average correct classification rate: 0.846008
+Magnitude of largest network weight: 11.252921
+Training done!
 
 	       Testing data:
+Evaluating performance on test dataset... mode=0, units=0, sigmoid=0
+Digit 0, correct classification rate=0.958163
+Digit 1, correct classification rate=0.973568
+Digit 2, correct classification rate=0.787791
+Digit 3, correct classification rate=0.865347
+Digit 4, correct classification rate=0.879837
+Digit 5, correct classification rate=0.733184
+Digit 6, correct classification rate=0.934238
+Digit 7, correct classification rate=0.887160
+Digit 8, correct classification rate=0.782341
+Digit 9, correct classification rate=0.824579
+Average correct classification rate: 0.862621
+
 
 2 .- (1 marks) Repeat the process using the hyperbolic tangent activatiob
 	       function.
+
+	       Training data (last training round):
+
+**** After 145000 iterations (20):
+Digit 0, correct classification rate=0.948775
+Digit 1, correct classification rate=0.965742
+Digit 2, correct classification rate=0.807087
+Digit 3, correct classification rate=0.839286
+Digit 4, correct classification rate=0.877637
+Digit 5, correct classification rate=0.729614
+Digit 6, correct classification rate=0.936975
+Digit 7, correct classification rate=0.875000
+Digit 8, correct classification rate=0.771605
+Digit 9, correct classification rate=0.809426
+Average correct classification rate: 0.856115
+Magnitude of largest network weight: 4.677112
+Training done!
+
+	       Testing data:
+
+Evaluating performance on test dataset... mode=0, units=0, sigmoid=1
+Digit 0, correct classification rate=0.957143
+Digit 1, correct classification rate=0.978855
+Digit 2, correct classification rate=0.779070
+Digit 3, correct classification rate=0.870297
+Digit 4, correct classification rate=0.900204
+Digit 5, correct classification rate=0.671525
+Digit 6, correct classification rate=0.926931
+Digit 7, correct classification rate=0.881323
+Digit 8, correct classification rate=0.790554
+Digit 9, correct classification rate=0.802775
+Average correct classification rate: 0.855868
 
 
 3 .- (1 marks) Which type of activation function yielded the best classification
@@ -52,9 +111,22 @@ but explain carefully when needed.
 	       150 hidden units. Report the classification rates on training and
 	       testing data just as for 1) and 2).
 
+	       Training data (last training round):
+	       
+	       Testing data:
+
+
 5 .- (1 marks) Same as 4), except use 10 hidden units instead
 
+	       Training data (last training round):
+	       
+	       Testing data:
+
 6 .- (1 marks) Same as 5), except use 3 hidden units instead
+
+	       Training data (last training round):
+	       
+	       Testing data:
 
 7 .- (4 marks) Comment on the experiments in 4, 5, and 6, and give your conclusion
 	       regarding the effect of the number of hidden units on classification
@@ -68,18 +140,44 @@ but explain carefully when needed.
 	       performance.
 
 	       Number of hidden units used:
-
+	       150
 	       Classification rate on testing data:
+	       0.996722
+
+zhangmao@iits-b473-20049:~/cscd84w16_space/CSCD84/A4$ ./NeuralNets 3 150 0 10 0
+Evaluating performance on test dataset... mode=2, units=150, sigmoid=0
+Digit 0, correct classification rate=0.996939
+Digit 1, correct classification rate=0.999119
+Digit 2, correct classification rate=0.997093
+Digit 3, correct classification rate=0.991089
+Digit 4, correct classification rate=0.995927
+Digit 5, correct classification rate=0.992152
+Digit 6, correct classification rate=1.000000
+Digit 7, correct classification rate=1.000000
+Digit 8, correct classification rate=0.995893
+Digit 9, correct classification rate=0.999009
+Average correct classification rate: 0.996722
 
 9 .- (5 marks) Describe how you would build a network to play the cat
 	        and mouse game (move the mouse to help it survive).
 
 		- Describe what the input is in terms of a vector of
 		  values
+
+Input should be different states of the game (i.e. just like QLearning - positions of the agents including cats, mouses, and cheeses)
+
 		- Describe what the output layer looks like (how many
 		  neurons and what they encode)
+
+4 neurons that represents 4 directions of movement (up, right, down, left), the output value should represent the goodness of that move based on input configuration.
+
 		- Describe the error function
+
+The error function would be the differences between the target value and goodness of the move, the target value should be set positive for movement good to the mouse and negative for movement bad for the mouse.
+
 		- How many layers should you use?
+
+Since there is a large number of inputs, it would be great to have hidden layers that extract the input features. I think 1-2 hidden layers that extract input features regarding the positions of cheese, cat and mouse should be great.
 _____________________________________________________
 
 Mark with an 'x' where appropriate. If something is only
@@ -89,19 +187,19 @@ doesn't work, or what problems exist.
         	Complete/Working	Partial		Not done
 
 Logistic
- activation
+ activation        x
 
-1L Feed-forward  
+1L Feed-forward    x
 
-1L Backprop
+1L Backprop        x
 
-1L Classify
+1L Classify        x
+ 
+2L Feed-forward    x
 
-2L Feed-forward
+2L Backprop        x
 
-2L Backprop
-
-2L Classify
+2L Classify        x
 _____________________________________________________
 
 Marking:
