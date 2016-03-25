@@ -38,34 +38,35 @@ but explain carefully when needed.
 	       Copy/paste the reported classification rates for:
 	 	
 	       Training data (last training round):
-**** After 170000 iterations (20):
-Digit 0, correct classification rate=0.950980
-Digit 1, correct classification rate=0.970383
-Digit 2, correct classification rate=0.805195
-Digit 3, correct classification rate=0.820652
-Digit 4, correct classification rate=0.895706
-Digit 5, correct classification rate=0.708940
-Digit 6, correct classification rate=0.923404
-Digit 7, correct classification rate=0.877301
-Digit 8, correct classification rate=0.734607
-Digit 9, correct classification rate=0.772908
-Average correct classification rate: 0.846008
-Magnitude of largest network weight: 11.252921
+**** After 390000 iterations (50):
+Digit 0, correct classification rate=0.930586
+Digit 1, correct classification rate=0.978827
+Digit 2, correct classification rate=0.788760
+Digit 3, correct classification rate=0.834264
+Digit 4, correct classification rate=0.871166
+Digit 5, correct classification rate=0.612756
+Digit 6, correct classification rate=0.916129
+Digit 7, correct classification rate=0.880567
+Digit 8, correct classification rate=0.764211
+Digit 9, correct classification rate=0.794118
+Average correct classification rate: 0.837138
+Magnitude of largest network weight: 9.774628
 Training done!
 
 	       Testing data:
+zhangmao@iits-b473-20068:~/cscd84w16_space/CSCD84/A4$ ./NeuralNets 1 0 0 50 0
 Evaluating performance on test dataset... mode=0, units=0, sigmoid=0
-Digit 0, correct classification rate=0.958163
-Digit 1, correct classification rate=0.973568
-Digit 2, correct classification rate=0.787791
-Digit 3, correct classification rate=0.865347
-Digit 4, correct classification rate=0.879837
-Digit 5, correct classification rate=0.733184
-Digit 6, correct classification rate=0.934238
-Digit 7, correct classification rate=0.887160
-Digit 8, correct classification rate=0.782341
-Digit 9, correct classification rate=0.824579
-Average correct classification rate: 0.862621
+Digit 0, correct classification rate=0.963265
+Digit 1, correct classification rate=0.972687
+Digit 2, correct classification rate=0.784884
+Digit 3, correct classification rate=0.868317
+Digit 4, correct classification rate=0.886965
+Digit 5, correct classification rate=0.655830
+Digit 6, correct classification rate=0.927975
+Digit 7, correct classification rate=0.880350
+Digit 8, correct classification rate=0.773101
+Digit 9, correct classification rate=0.793855
+Average correct classification rate: 0.850723
 
 
 2 .- (1 marks) Repeat the process using the hyperbolic tangent activatiob
@@ -73,60 +74,149 @@ Average correct classification rate: 0.862621
 
 	       Training data (last training round):
 
-**** After 145000 iterations (20):
-Digit 0, correct classification rate=0.948775
-Digit 1, correct classification rate=0.965742
-Digit 2, correct classification rate=0.807087
-Digit 3, correct classification rate=0.839286
-Digit 4, correct classification rate=0.877637
-Digit 5, correct classification rate=0.729614
-Digit 6, correct classification rate=0.936975
-Digit 7, correct classification rate=0.875000
-Digit 8, correct classification rate=0.771605
-Digit 9, correct classification rate=0.809426
-Average correct classification rate: 0.856115
-Magnitude of largest network weight: 4.677112
+**** After 90000 iterations (10):
+Digit 0, correct classification rate=0.942460
+Digit 1, correct classification rate=0.972727
+Digit 2, correct classification rate=0.760956
+Digit 3, correct classification rate=0.844961
+Digit 4, correct classification rate=0.896130
+Digit 5, correct classification rate=0.658199
+Digit 6, correct classification rate=0.940299
+Digit 7, correct classification rate=0.880374
+Digit 8, correct classification rate=0.755365
+Digit 9, correct classification rate=0.758030
+Average correct classification rate: 0.840950
+Magnitude of largest network weight: 4.065293
 Training done!
 
 	       Testing data:
 
+zhangmao@iits-b473-20068:~/cscd84w16_space/CSCD84/A4$ ./NeuralNets 1 0 1 10 0
 Evaluating performance on test dataset... mode=0, units=0, sigmoid=1
-Digit 0, correct classification rate=0.957143
-Digit 1, correct classification rate=0.978855
-Digit 2, correct classification rate=0.779070
-Digit 3, correct classification rate=0.870297
-Digit 4, correct classification rate=0.900204
-Digit 5, correct classification rate=0.671525
-Digit 6, correct classification rate=0.926931
+Digit 0, correct classification rate=0.961224
+Digit 1, correct classification rate=0.970925
+Digit 2, correct classification rate=0.791667
+Digit 3, correct classification rate=0.868317
+Digit 4, correct classification rate=0.915479
+Digit 5, correct classification rate=0.634529
+Digit 6, correct classification rate=0.923800
 Digit 7, correct classification rate=0.881323
-Digit 8, correct classification rate=0.790554
-Digit 9, correct classification rate=0.802775
-Average correct classification rate: 0.855868
-
+Digit 8, correct classification rate=0.799795
+Digit 9, correct classification rate=0.746283
+Average correct classification rate: 0.849334
 
 3 .- (1 marks) Which type of activation function yielded the best classification
 	       results? which one learned faster?
+
+The classification results were basically the same for both activation functions (by applying different configurations). But given the same configuration, hyperbolic-tangent activation seems to learn faster(terminate in 10 iterations).
 
 4 .- (1 marks) Train a 2-layer network with hyperbolic-tangent activation, using
 	       150 hidden units. Report the classification rates on training and
 	       testing data just as for 1) and 2).
 
 	       Training data (last training round):
+**** After 140000 iterations (10):
+Digit 0, correct classification rate=0.978131
+Digit 1, correct classification rate=0.977778
+Digit 2, correct classification rate=0.920160
+Digit 3, correct classification rate=0.916817
+Digit 4, correct classification rate=0.949451
+Digit 5, correct classification rate=0.930070
+Digit 6, correct classification rate=0.958506
+Digit 7, correct classification rate=0.939394
+Digit 8, correct classification rate=0.910480
+Digit 9, correct classification rate=0.926877
+Average correct classification rate: 0.940766
+Largest hidden to output weight: 4.720197
+Largest input to hidden weight: 8.651938
+Training done!
 	       
 	       Testing data:
+zhangmao@iits-b473-20068:~/cscd84w16_space/CSCD84/A4$ ./NeuralNets 3 150 1 10 0
+Evaluating performance on test dataset... mode=2, units=150, sigmoid=1
+Digit 0, correct classification rate=0.982653
+Digit 1, correct classification rate=0.986784
+Digit 2, correct classification rate=0.922481
+Digit 3, correct classification rate=0.934653
+Digit 4, correct classification rate=0.956212
+Digit 5, correct classification rate=0.934978
+Digit 6, correct classification rate=0.964509
+Digit 7, correct classification rate=0.938716
+Digit 8, correct classification rate=0.942505
+Digit 9, correct classification rate=0.940535
+Average correct classification rate: 0.950403
 
 
 5 .- (1 marks) Same as 4), except use 10 hidden units instead
 
 	       Training data (last training round):
+
+**** After 110000 iterations (10):
+Digit 0, correct classification rate=0.969697
+Digit 1, correct classification rate=0.975439
+Digit 2, correct classification rate=0.855711
+Digit 3, correct classification rate=0.880952
+Digit 4, correct classification rate=0.949227
+Digit 5, correct classification rate=0.845987
+Digit 6, correct classification rate=0.942231
+Digit 7, correct classification rate=0.926357
+Digit 8, correct classification rate=0.837891
+Digit 9, correct classification rate=0.868852
+Average correct classification rate: 0.905234
+Largest hidden to output weight: 1.886812
+Largest input to hidden weight: 1.155313
+Training done!
 	       
 	       Testing data:
+
+zhangmao@iits-b473-20068:~/cscd84w16_space/CSCD84/A4$ ./NeuralNets 3 10 1 10 0
+Evaluating performance on test dataset... mode=2, units=10, sigmoid=1
+Digit 0, correct classification rate=0.975510
+Digit 1, correct classification rate=0.985022
+Digit 2, correct classification rate=0.885659
+Digit 3, correct classification rate=0.909901
+Digit 4, correct classification rate=0.945010
+Digit 5, correct classification rate=0.862108
+Digit 6, correct classification rate=0.956159
+Digit 7, correct classification rate=0.924125
+Digit 8, correct classification rate=0.867556
+Digit 9, correct classification rate=0.885035
+Average correct classification rate: 0.919608
 
 6 .- (1 marks) Same as 5), except use 3 hidden units instead
 
 	       Training data (last training round):
+**** After 65000 iterations (10):
+Digit 0, correct classification rate=0.982659
+Digit 1, correct classification rate=0.985740
+Digit 2, correct classification rate=0.155844
+Digit 3, correct classification rate=0.043299
+Digit 4, correct classification rate=0.015054
+Digit 5, correct classification rate=0.037778
+Digit 6, correct classification rate=0.962451
+Digit 7, correct classification rate=0.934990
+Digit 8, correct classification rate=0.006652
+Digit 9, correct classification rate=0.097804
+Average correct classification rate: 0.422227
+Largest hidden to output weight: 1.435180
+Largest input to hidden weight: 0.499956
+Training done!
 	       
 	       Testing data:
+zhangmao@iits-b473-20068:~/cscd84w16_space/CSCD84/A4$ ./NeuralNets 3 3 1 10 0
+Evaluating performance on test dataset... mode=2, units=3, sigmoid=1
+Digit 0, correct classification rate=0.991837
+Digit 1, correct classification rate=0.992952
+Digit 2, correct classification rate=0.125969
+Digit 3, correct classification rate=0.101980
+Digit 4, correct classification rate=0.063136
+Digit 5, correct classification rate=0.014574
+Digit 6, correct classification rate=0.960334
+Digit 7, correct classification rate=0.938716
+Digit 8, correct classification rate=0.030801
+Digit 9, correct classification rate=0.123885
+Average correct classification rate: 0.434418
+
 
 7 .- (4 marks) Comment on the experiments in 4, 5, and 6, and give your conclusion
 	       regarding the effect of the number of hidden units on classification
@@ -135,14 +225,20 @@ Average correct classification rate: 0.855868
 	       What is the network with 3 hidden telling you about this classification
 	       problem?
 
+The number of hidden units should at least be as many as output neurons for the classification process to work peoperly. 
+
+When there are only 3 hidden units, the neural network over-summarized the input features and thus the output layer can't get enough information for the hidden layer inputs, the classification did not work out as well as expected.
+
 8 .- (5 marks) Train the best performing network you can. Use any activation function
 	       you wish, and set the number of hidden units so as to achieve the best
 	       performance.
-
+	       
 	       Number of hidden units used:
 	       150
 	       Classification rate on testing data:
 	       0.996722
+
+Using logistic activation function: sigmoid=1
 
 zhangmao@iits-b473-20049:~/cscd84w16_space/CSCD84/A4$ ./NeuralNets 3 150 0 10 0
 Evaluating performance on test dataset... mode=2, units=150, sigmoid=0
