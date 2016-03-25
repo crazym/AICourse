@@ -357,19 +357,25 @@ void feedforward_2layer(double sample[INPUTS], double (*sigmoid)(double input), 
    **************************************************************************************************/
   double input_weight_sum[units], hidden_layer_sum;
 
+  // get h_activations for the hidden layer first
+  for (int h=0; h<units; h++) {
+    input_weight_sum[h] = 0;
+    for (int i=0; i<INPUTS; i++) {
+      // sum up input-weight products for hidden neuron h
+      input_weight_sum[h] += weights_ih[i][h] * sample[i];
+    }
+    // pass the scaled input to sigmoid to update the activation value
+    h_activations[h] = sigmoid(input_weight_sum[h]*SIGMOID_SCALE);
+  }
+
+  // then update activations for the output layer
   for (int o=0; o<OUTPUTS; o++) {
     hidden_layer_sum =0;
+    
     for (int h=0; h<units; h++) {
-      input_weight_sum[h] = 0;
-      for (int i=0; i<INPUTS; i++) {
-        // sum up input-weight products for hidden neuron h
-        input_weight_sum[h] += weights_ih[i][h] * sample[i];
-      }
-      // pass the scaled input to sigmoid to update the activation value
-      h_activations[h] = sigmoid(input_weight_sum[h]*SIGMOID_SCALE);
-
       hidden_layer_sum += weights_ho[h][o] * h_activations[h];
     }
+
     activations[o] = sigmoid(hidden_layer_sum*SIGMOID_SCALE*(MAX_HIDDEN/units));
   }
 }
@@ -412,42 +418,47 @@ void backprop_2layer(double sample[INPUTS],double h_activations[MAX_HIDDEN], dou
   double hidden_error[units], d_hidden_error[units];
   double orig_weights_ho[MAX_HIDDEN][OUTPUTS];
 
+  // update weight_ho and calculate error for hidden layer neurons first
+  for (int h=0; h<units; h++) {
+
+    hidden_error[h]= 0;
+    
+    // initiatte target values for each neuron
+    for (int o=0; o< OUTPUTS; o++){
+
+      if (sigmoid(0) == 0.5) {
+        // target value =0.8 if current neuron corresponds to the correct label, o.w. 0.2
+        if (o==label) target[o]=0.8;
+        else target[o]=0.2;
+      } else {
+        // target value =0.8 if current neuron corresponds to the correct label, o.w. 0.2
+        if (o==label) target[o]=0.6;
+        else target[o]=-0.6;
+      }
+      
+      // compute error
+      error[o] = target[o] - activations[o];
+
+      if (sigmoid(0) == 0.5) { // logistic(0) == 0.5
+        d_error[o] = error[o] * (activations[o] * (1 - activations[o]));
+      } else{
+        //assume legal inputs, sigmoid(0) = 0 indicates it's tanh()
+        d_error[o] = error[o] * (1 - activations[o]*activations[o]);
+      }
+
+      // keep a copy of original hidden-to-output weight
+      orig_weights_ho[h][o] = weights_ho[h][o];
+      // update weights from hidden neuron h to output neuron o
+      weights_ho[h][o] += ALPHA * d_error[o] * h_activations[h];
+
+      // compute error for hidden neuron h
+      hidden_error[h] += d_error[o]*orig_weights_ho[h][o];  
+    }
+  }
+
+  // now update weight_ih by calculating derivatives of hidden layer nueron errors
   for (int i=0; i<INPUTS; i++) {
     for (int h=0; h<units; h++) {
-
-      hidden_error[h]= 0;
-      
-      // initiatte target values for each neuron
-      for (int o=0; o< OUTPUTS; o++){
-
-        if (sigmoid(0) == 0.5) {
-          // target value =0.8 if current neuron corresponds to the correct label, o.w. 0.2
-          if (o==label) target[o]=0.8;
-          else target[o]=0.2;
-        } else {
-          // target value =0.8 if current neuron corresponds to the correct label, o.w. 0.2
-          if (o==label) target[o]=0.6;
-          else target[o]=-0.6;
-        }
-        
-        // compute error
-        error[o] = target[o] - activations[o];
-
-        if (sigmoid(0) == 0.5) { // logistic(0) == 0.5
-          d_error[o] = error[o] * (activations[o] * (1 - activations[o]));
-        } else{
-          //assume legal inputs, sigmoid(0) = 0 indicates it's tanh()
-          d_error[o] = error[o] * (1 - activations[o]*activations[o]);
-        }
-
-        // keep a copy of original hidden-to-output weight
-        orig_weights_ho[h][o] = weights_ho[h][o];
-        // update weights from hidden neuron h to output neuron o
-        weights_ho[h][o] += ALPHA * d_error[o] * h_activations[h];
-
-        // compute error for hidden neuron h
-        hidden_error[h] += d_error[o]*orig_weights_ho[h][o];  
-      }
 
       // now we have hidden_error for current hidden neuron h
       if (sigmoid(0) == 0.5) { // logistic(0) == 0.5
