@@ -419,9 +419,17 @@ void backprop_2layer(double sample[INPUTS],double h_activations[MAX_HIDDEN], dou
       
       // initiatte target values for each neuron
       for (int o=0; o< OUTPUTS; o++){
-        //   target value =0.8 if current neuron corresponds to the correct label, o.w. 0.2
-        if (o==label) target[o]=0.8;
-        else target[o]=0.2;
+
+        if (sigmoid(0) == 1) {
+          // target value =0.8 if current neuron corresponds to the correct label, o.w. 0.2
+          if (o==label) target[o]=0.8;
+          else target[o]=0.2;
+        } else {
+          // target value =0.8 if current neuron corresponds to the correct label, o.w. 0.2
+          if (o==label) target[o]=0.6;
+          else target[o]=-0.6;
+        }
+        
         // compute error
         error[o] = target[o] - activations[o];
 
