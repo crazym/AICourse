@@ -1,0 +1,96 @@
+CSC D84 - Artificial Intelligence
+
+Assignment 5 - Decision Trees for OCR
+
+This assignment is worth:
+
+10 AIUs (Artificial Intelligence Units)
+toward the 35% assignment component of your final
+mark.
+
+________________________________________________
+
+Student Name (last, first):
+
+Student number:
+
+UTORid:
+
+READ THIS AND SIGN YOUR NAME AT THE END:
+
+ I certify that I have read the UTSC code on academic
+honesty and plaguarism. All work submitted as part
+of this assignment is my own.
+
+	Signed: _(your name goes here)__
+
+
+(-5 marks for failing to provide the identifying
+ information requested above)
+________________________________________________
+
+Answer the following questions. Be concise and clear
+but explain carefully when needed.
+
+1 .- (5 marks) Describe briefly the different ways you researched for
+	       measuring dissimilarity between probability distributions.
+
+
+2 .- (2.5 marks) Describe the method you used to select a test for each
+  	         node of a decision tree. Even if you used standard
+	         'reduction of uncertainty', explain what other things
+	         you tried and why did you choose to stay with your 
+	         final setup.
+
+3 .- Report the per/class classification rates for 
+
+	Tree levels    :	4	7	4	7	4	7	4	7
+	Number of trees:	10		50		100		150
+
+     
+4 .- Report the overall classification rates for
+
+	Tree levels    :	4	7	4	7	4	7	4	7
+	Number of trees:	10		50		100		150
+
+
+5 .- (2.5 marks) Based on the above. Are deeper trees better or worse
+		 at solving this task? should you keep adding levels to
+		 the trees?
+
+6 .- (2.5 marks) Based on the above. Are forests with more trees better?
+		 should you keep adding trees to the forest?
+
+7 .- (2.5 marks) What would have to change in your code if you were going to do
+		 classification of all letters/symbols/digits instead of just
+		 digits?
+
+_____________________________________________________
+
+Mark with an 'x' where appropriate. If something is only
+working partially, briefly describe what works, what
+doesn't work, or what problems exist.
+	
+        	Complete/Working	Partial		Not done
+
+test_pixels.m
+
+trainRandomizedDT.m
+
+classifyData.m
+
+_____________________________________________________
+
+Marking:
+
+(10 marks) Tests in test_pixels.m (TA assigned based on how
+	   reasonable/good/thorough your tests look)
+
+(10 marks) classifyData.m works
+
+(15 marks) trainRandomizedDT.m produces working decision trees
+
+(15 marks) Answers in this report
+
+Total for A6:       / out of 50
+
