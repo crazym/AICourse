@@ -27,9 +27,9 @@
 function [idx1]=test_pixels(pix1,pix2,testID)
 
 	switch(testID)
-		case 0
+		case 1
 			% indices of pixels in input vector pix1 whose value is greater than 200.
-			idx1=find(pix1>200);			
+			idx1=find(pix1>225 & pix1+1 ==0);			
 		%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 		%	TO DO:
 		%		  Add your own tests. You can add as many as you like, but
@@ -43,16 +43,16 @@ function [idx1]=test_pixels(pix1,pix2,testID)
 		%         Said a different way. There should be *no* for loops in this
 		%		 script.
 		%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-		case 1 
+		case 2 
 			%both  black
-			idx1 = find(pix1 > 200 & pix2 > 200);
-		case 2
+			idx1 = find(pix1 > 250 & pix2 > 250);
+		case 3
 			%both white
-			idx1 = find(pix1 < 10 & pix1 < 10);
-		case 2
+			idx1 = find(pix1 == 0 & pix1 == 0);
+		case 4
 			% small the color difference
 			idx1 = find(abs(pix1 - pix2) < 10);
-		case 3
+		case 5
 			%large color difference
 			idx1 = find(abs(pix1 - pix2) > 200);
 		otherwise
