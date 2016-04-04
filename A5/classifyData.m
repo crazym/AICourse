@@ -25,7 +25,7 @@ N=size(forest,1);    % Number of trees in this forest
 sampleCM=zeros(10,10);    % Sample confusion matrix
 
 fprintf(2,'Forest size=%d, Processing sample: ',N);
-for i=1:size(samples,1);        % For all patches
+for i=1:size(samples,1)        % For all patches
     pch=samples(i,:);                % This is sample i. 
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
    	% TO DO:
@@ -47,26 +47,33 @@ for i=1:size(samples,1);        % For all patches
     classes_pch = zeros(1, 10);
     % get the class voting
     for treeId=1:N
-    	tree = forest(treeId);
+    	tree = reshape(forest(treeId,:),[size(forest, 2)/13 13]);
     	nodeId = 1;
-    	while (nodeId<(size(tree,1)/2) | tree(nodeId)(3) ~= -1)
-    		node = tree(nodeId);
+    	node = tree(nodeId, :);
+    	% node(3)
+    	while (nodeId<(size(tree,1)/2) & node(3) ~= -1)
+    		% node = tree(nodeId, :)
     		result = test_pixels(pch(node(1)), pch(node(2)), node(3));
-    		if result == 1
-    			nodeId == 2*nodeId;
+    		if length(result) == 1
+    			nodeId = 2*nodeId;
     		else
-    			nodeId == 2*nodeId+1;
-    		end
-    	end
-    	classes_pch = classes_pch + tree(nodeId)(4:end);
-  	end
+    			nodeId = 2*nodeId+1;
+    		end;
+    		node = tree(nodeId, :);
+    	end;
+    	% node = tree(nodeId, :);
+    	% node(4:end)
+    	classes_pch = classes_pch + node(4:end);
+  	end;
   	% find the best guess
+  	classes_pch;
   	cls = find(classes_pch==max(classes_pch));
-  	if cls == classes(i)
-  		% correct classification, add 1 to the diagonal
-  		sampleCM(cls,cls) = sampleCM(cls,cls) + 1;
-  	else
-  		sampleCM(classes(i), cls) = sampleCM(classes(i), cls) + 1;
+  	% if cls == classes(i)
+  	% 	% correct classification, add 1 to the diagonal
+  	% 	sampleCM(cls,cls) = sampleCM(cls,cls) + 1;
+  	% else
+	sampleCM(classes(i), cls) = sampleCM(classes(i), cls) + 1;
+  	% end;
 end;
 
 classCount=hist(classes,[1:10]);
