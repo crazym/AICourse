@@ -29,7 +29,7 @@ function [idx1]=test_pixels(pix1,pix2,testID)
 	switch(testID)
 		case 1
 			% indices of pixels in input vector pix1 whose value is greater than 200.
-			idx1=find(pix1>225 & pix1+1 ==0);			
+			idx1=find(pix1 > 225 & pix2 == 0);			
 		%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 		%	TO DO:
 		%		  Add your own tests. You can add as many as you like, but
@@ -51,10 +51,10 @@ function [idx1]=test_pixels(pix1,pix2,testID)
 			idx1 = find(pix1 == 0 & pix1 == 0);
 		case 4
 			% small the color difference
-			idx1 = find(abs(pix1 - pix2) < 10);
-		case 5
-			%large color difference
-			idx1 = find(abs(pix1 - pix2) > 200);
+			idx1 = find(pix1 == 0 & pix2 > 225);
+		% case 5
+		% 	%large color difference
+		% 	idx1 = find(abs(pix1 - pix2) > 200);
 		otherwise
 			fprintf(2,'Invalid testID!\n'); idx1=[]; return;
 	end;

@@ -79,7 +79,7 @@ fprintf(2,'Training randomized tree at index %d\n',idx);
 % between label distributions for the left and right subsets of training
 % cases after splitting.
 
-MaxTestID = 5;		% <---- You HAVE to change this to reflect the number of tests your
+MaxTestID = 4;		% <---- You HAVE to change this to reflect the number of tests your
 					%	    code can choose from. See test_pixels.m
 
 %% Your code will be updating the variables just below
@@ -143,8 +143,8 @@ for tr=1:trials		% For the specified number of random tests to try
 	% right indices are the complement of left_indices
 	right_indices = setdiff(1:N, left_indices);
 
-	LeftNum = size(left_indices, 1);
-	RightNum = size(right_indices, 1);
+	LeftNum = length(left_indices);
+	RightNum = length(right_indices);
 	LeftSplit = trainS(left_indices, :);
 	RightSplit = trainS(right_indices, :);
 
@@ -160,16 +160,35 @@ for tr=1:trials		% For the specified number of random tests to try
 		classNum = size(find(trainC==i), 1);
 		entropy_before = entropy_before + (classNum/N) * log2(classNum/N);
 
-		entropy_left = entropy_left + (LeftClassPDF(i)/LeftNum) * log(LeftClassPDF(i)/LeftNum);
-		entropy_right = entropy_right + (RightClassPDF(i)/RightNum) * log(RightClassPDF(i)/RightNum);
+		% o.w will return NaN error
+		if (LeftNum>0 & LeftClassPDF(i)>0) 
+			entropy_left = entropy_left + (LeftClassPDF(i)/LeftNum) * log2(LeftClassPDF(i)/LeftNum);
+		end;
+		if (RightNum>0 & RightClassPDF(i)) 
+			entropy_right = entropy_right + (RightClassPDF(i)/RightNum) * log2(RightClassPDF(i)/RightNum);
+		end;
 	end;
-
+	% LeftNum
+	% RightNum
+	% entropy_left
+	% entropy_right
+	
 	entropy_after = (LeftNum/N) * (-entropy_left) + (RightNum/N) * (-entropy_right);
+	% entropy_before
+	% entropy_after
 
 	InforGain = - entropy_before - entropy_after;
 
 	if (InforGain>maxDis)
 		maxDis = InforGain;
+
+		% my_e_b = entropy_before;
+		% my_e_a = entropy_after;
+		% my_e_l = entropy_left;
+		% my_e_r = entropy_right;
+		% rn = RightNum;
+		% ln = LeftNum;
+
 		bestLeftSplit = LeftSplit;
 		bestRightSplit = RightSplit;
 		bestLeftClass = trainC(left_indices);
@@ -187,6 +206,15 @@ Tree(idx,1)=best_pix1;
 Tree(idx,2)=best_pix2;
 Tree(idx,3)=best_testid;
 
+% maxDis
+% my_e_b
+% my_e_a
+% my_e_l
+% my_e_r
+% rn
+% ln
+% lft = size(bestLeftClass)
+% rgt = size(bestRightClass)
 [Tree]=trainRandomizedDT(Tree,bestLeftSplit,bestLeftClass,2*idx,trials, levels-1);
 [Tree]=trainRandomizedDT(Tree,bestRightSplit,bestRightClass,(2*idx)+1,trials, levels-1);
 return;
