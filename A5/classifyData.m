@@ -21,29 +21,52 @@ function [sampleCM]=classifyData(samples,classes,forest)
 % patch classes so we can compute accuracy ---|       |
 % Trained tree forest --------------------------------|
 
-N=size(forest,1);	% Number of trees in this forest
-sampleCM=zeros(10,10);	% Sample confusion matrix
+N=size(forest,1);    % Number of trees in this forest
+sampleCM=zeros(10,10);    % Sample confusion matrix
 
 fprintf(2,'Forest size=%d, Processing sample: ',N);
-for i=1:size(samples,1);		% For all patches
-	pch=samples(i,:);				% This is sample i. 
-	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+for i=1:size(samples,1);        % For all patches
+    pch=samples(i,:);                % This is sample i. 
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
    	% TO DO:
-    	%        Complete the classification function. Your code must
-    	%        test the current sample by passing it through each
-    	%        of the decision trees in the tree forest. Once a
-	%	     terminal node is reached (leaf level node, or a node
-	% 		 whose test is '-1') the leaf node 'votes' using its
-	%		 class distribution. e.g. if the current leaf node's
-	%	     class distribution is [1 0 2 5 0 2 3 1 9] then the
-	%	     node adds 1 vote to class 0, 0 to class 1, 2 to class 2,
-	%		 and so on.
-	%
-	%		 Once you have tested using all trees in the forest,
-	%	     determine the most likely class for this sample, and
-	%		 use the true class and your estimated class to update
-	%		 the confusion matrix sampleCM
-	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    %         Complete the classification function. Your code must
+    %         test the current sample by passing it through each
+    %         of the decision trees in the tree forest. Once a
+    %         terminal node is reached (leaf level node, or a node
+    %         whose test is '-1') the leaf node 'votes' using its
+    %         class distribution. e.g. if the current leaf node's
+    %         class distribution is [1 0 2 5 0 2 3 1 9] then the
+    %         node adds 1 vote to class 0, 0 to class 1, 2 to class 2,
+    %         and so on.
+    %
+    %         Once you have tested using all trees in the forest,
+    %         determine the most likely class for this sample, and
+    %         use the true class and your estimated class to update
+    %         the confusion matrix sampleCM
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    classes_pch = zeros(1, 10);
+    % get the class voting
+    for treeId=1:N
+    	tree = forest(treeId);
+    	nodeId = 1;
+    	while (nodeId<(size(tree,1)/2) | tree(nodeId)(3) ~= -1)
+    		node = tree(nodeId);
+    		result = test_pixels(pch(node(1)), pch(node(2)), node(3));
+    		if result == 1
+    			nodeId == 2*nodeId;
+    		else
+    			nodeId == 2*nodeId+1;
+    		end
+    	end
+    	classes_pch = classes_pch + tree(nodeId)(4:end);
+  	end
+  	% find the best guess
+  	cls = find(classes_pch==max(classes_pch));
+  	if cls == classes(i)
+  		% correct classification, add 1 to the diagonal
+  		sampleCM(cls,cls) = sampleCM(cls,cls) + 1;
+  	else
+  		sampleCM(classes(i), cls) = sampleCM(classes(i), cls) + 1;
 end;
 
 classCount=hist(classes,[1:10]);
