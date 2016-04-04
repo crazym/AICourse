@@ -99,6 +99,7 @@ for tr=1:trials		% For the specified number of random tests to try
 	LeftClassPDF=zeros(1,10);
 	RightClassPDF=zeros(1,10);
 
+
 	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 	%  TO DO:
 	%		 Write the code to train a randomized decision tree. The code must
@@ -133,6 +134,48 @@ for tr=1:trials		% For the specified number of random tests to try
 	%		 not pass the test) will go in the *right* child node.
 	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+	N = size(trainS, 1); % sample set size
+	chosenTest = randperm(MaxTestID)(1);
+	randPixes = randperm(size(trainS, 2));
+	% pass in random pix1 and pix2 over the whole training sample
+	left_indices = test_pixels(trainS(:, randPixes(1)), trainS(:, randPixes(2)), chosenTest);
+	% right indices are the complement of left_indices
+	right_indices = setdiff(1:N, left_indices);
+
+	LeftNum = size(left_indices, 1);
+	RightNum = size(right_indices, 1);
+	LeftSplit = trainS(left_indices);
+	RightSplit = trainS(right_indices);
+
+	LeftClassPDF = hist(trainC(left_indices), [1:10]);
+	RightClassPDF = hist(trainC(right_indices), [1:10]);
+
+	entropy_before = 0;
+	entropy_left = 0;
+	entropy_right = 0;
+	% notive that addition are used in the loop, all values negated after the loop
+	for i=1:10
+		classNum = size(find(trainC==i), 1);
+		entropy_before = entropy_before + (classNum/N) * log2(classNum/N);
+
+		entropy_left = entropy_left + (LeftClassPDF(i)/LeftNum) * log(LeftClassPDF(i)/LeftNum);
+		entropy_right = entropy_right + (RightClassPDF(i)/RightNum) * log(RightClassPDF(i)/RightNum);
+	end;
+
+	entropy_after = (LeftNum/N) * (-entropy_left) + (RightNum/N) * (-entropy_right);
+
+	InforGain = - entropy_before - entropy_after;
+
+	if (InforGain>maxDis)
+		maxDis = InforGain;
+		bestLeftSplit = LeftSplit;
+		bestRightSplit = RightSplit;
+		bestLeftClass = LeftClassPDF;
+		bestRightClass = RightClassPDF;
+		best_pix1 = randPixes(1);
+		best_pix2 = randPixes(2);
+		best_testid = chosenTest;
+	end;
 end;
 
 % Completed selection of random test. Store the test for this node, and call recursively with the best
@@ -142,7 +185,7 @@ Tree(idx,1)=best_pix1;
 Tree(idx,2)=best_pix2;
 Tree(idx,3)=best_testid;
 
-[Tree]=trainRandomizedDT(Tree,bestLeftSplit,bestLeftClass,2*idx,trials);
-[Tree]=trainRandomizedDT(Tree,bestRightSplit,bestRightClass,(2*idx)+1,trials);
+[Tree]=trainRandomizedDT(Tree,bestLeftSplit,bestLeftClass,2*idx,trials, levels-1);
+[Tree]=trainRandomizedDT(Tree,bestRightSplit,bestRightClass,(2*idx)+1,trials, levels-1);
 return;
 
