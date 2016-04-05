@@ -28,7 +28,7 @@ function [idx1]=test_pixels(pix1,pix2,testID)
 
 	switch(testID)
 		case 1
-			% indices of pixels in input vector pix1 whose value is greater than 200.
+			% black - white
 			idx1=find(pix1 > 225 & pix2 == 0);			
 		%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 		%	TO DO:
@@ -44,17 +44,23 @@ function [idx1]=test_pixels(pix1,pix2,testID)
 		%		 script.
 		%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 		case 2 
-			%both  black
-			idx1 = find(pix1 > 250 & pix2 > 250);
+			% both  black
+			idx1 = find(pix1 > 225 & pix2 > 225);
 		case 3
-			%both white
+			% both white
 			idx1 = find(pix1 == 0 & pix1 == 0);
 		case 4
-			% small the color difference
+			% white - black
 			idx1 = find(pix1 == 0 & pix2 > 225);
-		% case 5
-		% 	%large color difference
-		% 	idx1 = find(abs(pix1 - pix2) > 200);
+		case 5
+			% both moderate (80 - 120)
+			idx1 = find(abs(pix1-100)<20 & abs(pix2-100)<20);
+		case 6
+			% both in (180 - 220)
+			idx1 = find(abs(pix1-200)<20 & abs(pix2-200)<20);
+		case 7
+			% both around 150 (120 - 180)
+			idx1 = find(abs(pix1-150)<30 & abs(pix2-150)<30);
 		otherwise
 			fprintf(2,'Invalid testID!\n'); idx1=[]; return;
 	end;

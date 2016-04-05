@@ -35,6 +35,10 @@ but explain carefully when needed.
 1 .- (5 marks) Describe briefly the different ways you researched for
 	       measuring dissimilarity between probability distributions.
 
+I researched about the standard Information Gain(using entropy) as a way to clarify the dissimilarity:
+http://stackoverflow.com/questions/1859554/what-is-entropy-and-information-gain
+It's actually the same approach we covered in tutorial, unfortunately I didn't get the chance to research other methods. :(
+
 
 2 .- (2.5 marks) Describe the method you used to select a test for each
   	         node of a decision tree. Even if you used standard
@@ -42,29 +46,144 @@ but explain carefully when needed.
 	         you tried and why did you choose to stay with your 
 	         final setup.
 
+I tried the standard information gain method and thought it pretty much makes sense.
+Basically the entropy at the parent node is calculated first (entropy_before = - \sum(P(Class=i|sample)*log2(P(Class=i|sample))));
+then we divide the sample into 2 sets according to the results returned by test_pixels,
+calculate the entropy on both sets (entropy_left, entropy_right), 
+get the new entropy by calculating the average of the two sets (entropy_after = (leftNum/SampleSize)*entropy_left + (rightNum/SampleSize)*entropy_right)
+The Information Gain is the difference between the new entropy and former entropy:
+Information Gain = entropy_before - entropy_after.
+
 3 .- Report the per/class classification rates for 
 
 	Tree levels    :	4	7	4	7	4	7	4	7
 	Number of trees:	10		50		100		150
+4, 10 =
+    0.9418
+    0.9903
+    0.4845
+    0.5564
+    0.5774
+    0.2466
+    0.5919
+    0.8735
+    0.5965
+    0.6174
 
-     
+4, 50 =
+    0.9816
+    0.9930
+    0.6027
+    0.7772
+    0.7566
+    0.1715
+    0.7307
+    0.8784
+    0.5811
+    0.7116
+
+4, 100 = 
+    0.9735
+    0.9938
+    0.6202
+    0.7525
+    0.7872
+    0.1424
+    0.7484
+    0.8901
+    0.6140
+    0.7661
+
+4, 150 =
+    0.9776
+    0.9938
+    0.6279
+    0.7644
+    0.7862
+    0.1536
+    0.7443
+    0.8872
+    0.6129
+    0.7750
+(by >> treeForest4150 = [treeForest4,50; treeForest4,100];)
+
+7, 10 =
+    0.9806
+    0.9912
+    0.5601
+    0.6436
+    0.6324
+    0.2063
+    0.7015
+    0.8298
+    0.4692
+    0.7869
+
+7, 50 =
+    0.9857
+    0.9912
+    0.7045
+    0.7614
+    0.7811
+    0.2108
+    0.8017
+    0.8395
+    0.6057
+    0.8226
+    
+7,100 =
+
+    0.9908
+    0.9930
+    0.6502
+    0.7901
+    0.8299
+    0.2578
+    0.8299
+    0.8502
+    0.6704
+    0.8226
+
+7, 150 =
+
+    0.9908
+    0.9930
+    0.6667
+    0.7851
+    0.8086
+    0.2500
+    0.8257
+    0.8502
+    0.6520
+    0.8246
+
 4 .- Report the overall classification rates for
 
 	Tree levels    :	4	7	4	7	4	7	4	7
 	Number of trees:	10		50		100		150
 
+	0.6476(4, 10) | 0.7184(4, 50) | 0.7288(4, 100) | 0.7323(4, 150)
+	0.6801(4, 10) | 0.7504(7, 50) |	0.7685(7, 100) | 0.7647(7, 150)
 
 5 .- (2.5 marks) Based on the above. Are deeper trees better or worse
 		 at solving this task? should you keep adding levels to
 		 the trees?
 
+		 Based on the above, deeper trees does get better performance. 
+
+		 But that does not mean more levels are better, deeper levels might trigger problems with Overfitting since it might fits the trainning data very well but badly on new data in the future.
+
 6 .- (2.5 marks) Based on the above. Are forests with more trees better?
 		 should you keep adding trees to the forest?
+
+		 Based on the above, forests with more trees do have better performance. 
+		 But keep increasing the number of trees in the forest might has a diminishing margin, and would not increase the results too much at the end.
 
 7 .- (2.5 marks) What would have to change in your code if you were going to do
 		 classification of all letters/symbols/digits instead of just
 		 digits?
 
+		 No, I think I can use the same code for classifing letter . digits. Since the tree will manage to learn the patterns by itself through the training process(on differnent pixels, etc), and the results can be guaranteed to some extent with enough decision trees to leverage the noises.
 _____________________________________________________
 
 Mark with an 'x' where appropriate. If something is only
@@ -73,11 +192,11 @@ doesn't work, or what problems exist.
 	
         	Complete/Working	Partial		Not done
 
-test_pixels.m
+test_pixels.m        X
 
-trainRandomizedDT.m
+trainRandomizedDT.m   X
 
-classifyData.m
+classifyData.m       X
 
 _____________________________________________________
 

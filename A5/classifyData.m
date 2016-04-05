@@ -50,30 +50,25 @@ for i=1:size(samples,1)        % For all patches
     	tree = reshape(forest(treeId,:),[size(forest, 2)/13 13]);
     	nodeId = 1;
     	node = tree(nodeId, :);
-    	% node(3)
+
+      % loop while the current node is not a leave or the branch is set (testid!=-1)
     	while (nodeId<(size(tree,1)/2) & node(3) ~= -1)
-    		% node = tree(nodeId, :)
     		result = test_pixels(pch(node(1)), pch(node(2)), node(3));
-    		if length(result) == 1
+    		% go left
+        if length(result) == 1
     			nodeId = 2*nodeId;
     		else
+        % go right
     			nodeId = 2*nodeId+1;
     		end;
     		node = tree(nodeId, :);
     	end;
-    	% node = tree(nodeId, :);
-    	% node(4:end)
     	classes_pch = classes_pch + node(4:end);
   	end;
   	% find the best guess
-  	classes_pch;
   	cls = find(classes_pch==max(classes_pch));
-  	% if cls == classes(i)
-  	% 	% correct classification, add 1 to the diagonal
-  	% 	sampleCM(cls,cls) = sampleCM(cls,cls) + 1;
-  	% else
-	sampleCM(classes(i), cls) = sampleCM(classes(i), cls) + 1;
-  	% end;
+    %  update confusion matrix
+    sampleCM(classes(i), cls) = sampleCM(classes(i), cls) + 1;
 end;
 
 classCount=hist(classes,[1:10]);

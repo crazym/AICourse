@@ -79,7 +79,7 @@ fprintf(2,'Training randomized tree at index %d\n',idx);
 % between label distributions for the left and right subsets of training
 % cases after splitting.
 
-MaxTestID = 4;		% <---- You HAVE to change this to reflect the number of tests your
+MaxTestID = 7;		% <---- You HAVE to change this to reflect the number of tests your
 					%	    code can choose from. See test_pixels.m
 
 %% Your code will be updating the variables just below
@@ -135,11 +135,11 @@ for tr=1:trials		% For the specified number of random tests to try
 	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 	N = size(trainS, 1); % sample set size
-	randTests = randperm(MaxTestID);
-	% randTests(1)
-	randPixes = randperm(size(trainS, 2));
+	chosenTest = ceil(rand()*MaxTestID);
+	pix1 = ceil(rand()*size(trainS, 2));
+	pix2 = ceil(rand()*size(trainS, 2));
 	% pass in random pix1 and pix2 over the whole training sample
-	left_indices = test_pixels(trainS(:, randPixes(1)), trainS(:, randPixes(2)), randTests(1));
+	left_indices = test_pixels(trainS(:, pix1), trainS(:, pix2), chosenTest);
 	% right indices are the complement of left_indices
 	right_indices = setdiff(1:N, left_indices);
 
@@ -148,9 +148,13 @@ for tr=1:trials		% For the specified number of random tests to try
 	LeftSplit = trainS(left_indices, :);
 	RightSplit = trainS(right_indices, :);
 
-	% size(trainC(right_indices))
-	LeftClassPDF = hist(trainC(left_indices), [1:10]);
-	RightClassPDF = hist(trainC(right_indices), [1:10]);
+	% use if condition to avoid NaN error
+	if (LeftNum>0)
+		LeftClassPDF = hist(trainC(left_indices), [1:10])./LeftNum;
+	end;
+	if (RightNum>0)
+		RightClassPDF = hist(trainC(right_indices), [1:10])./RightNum;
+	end;
 
 	entropy_before = 0;
 	entropy_left = 0;
@@ -162,40 +166,28 @@ for tr=1:trials		% For the specified number of random tests to try
 
 		% o.w will return NaN error
 		if (LeftNum>0 & LeftClassPDF(i)>0) 
-			entropy_left = entropy_left + (LeftClassPDF(i)/LeftNum) * log2(LeftClassPDF(i)/LeftNum);
+			entropy_left = entropy_left + (LeftClassPDF(i)) * log2(LeftClassPDF(i));
 		end;
-		if (RightNum>0 & RightClassPDF(i)) 
-			entropy_right = entropy_right + (RightClassPDF(i)/RightNum) * log2(RightClassPDF(i)/RightNum);
+		if (RightNum>0 & RightClassPDF(i)>0) 
+			entropy_right = entropy_right + (RightClassPDF(i)) * log2(RightClassPDF(i));
 		end;
 	end;
-	% LeftNum
-	% RightNum
-	% entropy_left
-	% entropy_right
 	
 	entropy_after = (LeftNum/N) * (-entropy_left) + (RightNum/N) * (-entropy_right);
-	% entropy_before
-	% entropy_after
 
 	InforGain = - entropy_before - entropy_after;
 
+	% update if find a better tree
 	if (InforGain>maxDis)
 		maxDis = InforGain;
-
-		% my_e_b = entropy_before;
-		% my_e_a = entropy_after;
-		% my_e_l = entropy_left;
-		% my_e_r = entropy_right;
-		% rn = RightNum;
-		% ln = LeftNum;
 
 		bestLeftSplit = LeftSplit;
 		bestRightSplit = RightSplit;
 		bestLeftClass = trainC(left_indices);
 		bestRightClass = trainC(right_indices);
-		best_pix1 = randPixes(1);
-		best_pix2 = randPixes(2);
-		best_testid = randTests(1);
+		best_pix1 = pix1;
+		best_pix2 = pix2;
+		best_testid = chosenTest;
 	end;
 end;
 
@@ -206,15 +198,6 @@ Tree(idx,1)=best_pix1;
 Tree(idx,2)=best_pix2;
 Tree(idx,3)=best_testid;
 
-% maxDis
-% my_e_b
-% my_e_a
-% my_e_l
-% my_e_r
-% rn
-% ln
-% lft = size(bestLeftClass)
-% rgt = size(bestRightClass)
 [Tree]=trainRandomizedDT(Tree,bestLeftSplit,bestLeftClass,2*idx,trials, levels-1);
 [Tree]=trainRandomizedDT(Tree,bestRightSplit,bestRightClass,(2*idx)+1,trials, levels-1);
 return;
